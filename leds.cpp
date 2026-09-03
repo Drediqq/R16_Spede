@@ -4,6 +4,7 @@
 void initializeLeds()
 {
 // see requirements for this function from leds.h
+// kommentti
 }
 
 void setLed(byte ledNumber)

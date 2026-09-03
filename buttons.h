@@ -1,6 +1,6 @@
 #ifndef BUTTONS_H
 #define BUTTONS_H
-#include <arduino.h>
+#include <Arduino.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 

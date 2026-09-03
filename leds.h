@@ -1,6 +1,6 @@
 #ifndef LEDS_H
 #define LEDS_H
-#include <arduino.h>
+#include <Arduino.h>
 
 /*
   initializeLeds() subroutine intializes analog pins A2,A3,A4,A5
