@@ -1,6 +1,6 @@
 #ifndef SPEDENSPELIT_H
 #define SPEDENSPELIT_H
-#include <arduino.h>
+#include <Arduino.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
