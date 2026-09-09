@@ -3,21 +3,23 @@
 #include <avr/io.h>
 
 
+void buttonsHandler();
+void buttonPress(uint8_t);
 
-// 6  Pin Change Interrupt Request 2 (pins D0 to D7)  (PCINT2_vect)
+// Digitaali portin arvo
+volatile uint8_t dState = 0xFF;
+// edellisen painalluksen arvo
+uint8_t lastPressedButton = 0xff;
+// edellinen arvo joka ei debouncettanut
+uint8_t stableState = 0xff;
 
-/* 
-  initButtonsAndButtonInterrupts subroutine is called from Setup() function
-  during the initialization of Speden Spelit. This function does the following:
-  1) Initializes 4 button pins for the game = Arduino pins 2,3,4,5
-  2) Initializes 1 button pin for starting the game = Aruino pin 6
-  3) Enables PinChangeInterrupt on D-bus in a way that interrupt
-     is generated whenever some of pins 2,3,4,5,6 is connected to LOW state
+// debounce ajastin ja delay jolla säädetään kuinka paljon aikaa välissä pitää olla vähintään
+unsigned long debounceTimer = 0;
+const unsigned long debounceDelay = 70; 
 
-*/
 
 // asettaa keskeytykset oikeisiin osoitteisiin riippuen siitä mikä pinni on kyseessä
-void arduinoInterruptHelper(uint8_t pin){
+void interruptHelper(uint8_t pin){
   if(pin <= 7){
     PCICR |= (1 << PCIE2);
     PCMSK2 |= (1 << pin);
@@ -30,40 +32,55 @@ void arduinoInterruptHelper(uint8_t pin){
   }
 }
 
-void initButtonsAndButtonInterrupts(void)
-{
-  // alustaa pinnit ja niiden interruptit
+void initButtonsAndButtonInterrupts(void){
+  // alustaa pinnit ja niiden keskeytykset
   for(int i = firstPin; i <= lastPin; i++){
     pinMode(i, INPUT_PULLUP);
-    arduinoInterruptHelper(i);
+    interruptHelper(i);
   }
 }
 
-  // See requirements for this function from buttons.h
+  // kaikki nappi keskeytykset kutsuu tätä ISRää ja tallennetaan dStateen miten napit on painettu
 ISR(PCINT2_vect) {
-    // 18 = D2 = 0
-   if (!(PIND & (1 << PCINT18))) {
-    buttonNumber = 0;
-    
-    // 19 = D3 = 1
-  } else if (!(PIND & (1 << PCINT19))) {
-    buttonNumber = 1;
-    
-    // 20 = D4 = 2
-  } else if (!(PIND & (1 << PCINT20))) {
-    buttonNumber = 2;
-    
-    // 21 = D5 = 3
-  }else if(!(PIND & (1 << PCINT21))){
-    buttonNumber = 3;
+   dState = PIND;
+}  
 
-    // turha?
-  }else {
-    buttonNumber = -1;
+// debouncettaa napit ja tarkistaa onko nappi ollut samassa arvossa tarpeeksi kauan ettei se ole bounce
+void buttonsHandler() {
+  //otetaan muuttujaan keskeytyksen kirjoittama arvo
+  uint8_t pressedButton = dState;
+
+  // jos lukema on muuttunut nollataan debounce ajastin
+  if (pressedButton != lastPressedButton) {
+    debounceTimer = millis();
+    lastPressedButton = pressedButton;
   }
-   /*
-     Here you implement logic for handling
-	 interrupts from 2,3,4,5 pins for Game push buttons
-	 and for pin 6 for start Game push button.
-   */
+  // jos nappi ei ole hypännyt määritetyn ajan sisällä oletetaan että se on oikea painallus
+  if ((millis() - debounceTimer) >= debounceDelay) {
+    // tarkistetaan vielä että napin tila on vaihtunut 1 -> 0 tai 0 -> 1
+    if(pressedButton != stableState){ 
+      buttonPress(pressedButton);
+    }
+  }
+}
+
+// Selvittää mitä nappia painettiin ja asettaa sitten sen arvon buttonNumber muuttujaan (meidän tapauksessa 2, 3, 4 tai 5)
+void buttonPress(uint8_t button) {
+  // selvitetään mikä bitti muuttui XORilla
+  uint8_t omegaButton = button ^ stableState;
+
+  // asetetaan stableState esim vaikka 1101 tai 1011 tai 0111 tai 1110
+  stableState = button;
+  
+  // jos mikään bitti ei muuttunut, lopetaan tähän
+  if(omegaButton == 0){
+    return;
+  }
+
+  // tarkistetaan onko joku pinni mennyt 1 -> 0
+  for (uint8_t pin = firstPin; pin <= lastPin; pin++) {
+    if ((omegaButton & (1 << pin)) && !(button & (1 << pin))) {
+      buttonNumber = pin;
+    }
+  }
 }
