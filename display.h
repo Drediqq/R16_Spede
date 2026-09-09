@@ -2,8 +2,6 @@
 #define DISPLAY_H
 #include <Arduino.h>
 
-delay(500);
-
 
 /*
   initializeDisplay subroutine initializes 5 pins needed for controlling 7-segment
@@ -17,7 +15,6 @@ delay(500);
 
 */
 void initializeDisplay(void);
-
 
 
 /*
