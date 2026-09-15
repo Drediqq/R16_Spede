@@ -36,6 +36,22 @@ void loop()
 void initializeTimer(void)
 {
   // see requirements for the function from SpedenSpelit.h
+  noInterrupts();          // Disable all interrupts while configuring
+
+  TCCR1A = 0;              // Clear control registers
+  TCCR1B = 0;
+  TCNT1  = 0;              // Reset counter to 0
+
+  // asetetaan rekisteri 1 Hz taajuuteen 16 MHz:illä
+  // 16MHz / (esiskaalaaja * haluttu taajuus)
+  // (16,000,000 / (1024 * 1)) - 1 = 15624
+  OCR1A = 15624;
+
+  TCCR1B |= (1 << WGM12);  // CTC
+  TCCR1B |= (1 << CS12) | (1 << CS10); // esiskaalaaja -> 1024
+  TIMSK1 |= (1 << OCIE1A); // Timer1 enable
+
+  interrupts();             // Re-enable interrupts
 }
 ISR(TIMER1_COMPA_vect)
 {
@@ -63,22 +79,8 @@ void startTheGame()
 {
   //valoshow pitää jotenki lopettaa joko täs tai sitte sielä ite valoshowssa
   //gameOn = true; // jos halutaan se näin ratkasta esimerkiks
+  
   initializeGame();
-  noInterrupts();           // Disable all interrupts while configuring
-
-  TCCR1A = 0;              // Clear control registers
-  TCCR1B = 0;
-  TCNT1  = 0;              // Reset counter to 0
-
-  // asetetaan rekisteri 1 Hz taajuuteen 16 MHz:illä
-  // 16MHz / (esiskaalaaja * haluttu taajuus)
-  // (16,000,000 / (1024 * 1)) - 1 = 15624
-  OCR1A = 15624;
-
-  TCCR1B |= (1 << WGM12);  // CTC
-  TCCR1B |= (1 << CS12) | (1 << CS10); // esiskaalaaja -> 1024
-  TIMSK1 |= (1 << OCIE1A); // Timer1 enable
-
-  interrupts();             // Re-enable interrupts
+  initializeTimer();
 
 }
