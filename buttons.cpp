@@ -32,15 +32,15 @@ void interruptHelper(uint8_t pin){
   }
 }
 
+// alustaa pinnit ja niiden keskeytykset
 void initButtonsAndButtonInterrupts(void){
-  // alustaa pinnit ja niiden keskeytykset
   for(int i = firstPin; i <= lastPin; i++){
     pinMode(i, INPUT_PULLUP);
     interruptHelper(i);
   }
 }
 
-  // kaikki nappi keskeytykset kutsuu tätä ISRää ja tallennetaan dStateen miten napit on painettu
+// kaikki nappi keskeytykset kutsuu tätä ISRää ja tallennetaan dStateen miten napit on painettu
 ISR(PCINT2_vect) {
    dState = PIND;
 }  

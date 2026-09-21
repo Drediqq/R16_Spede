@@ -1,11 +1,14 @@
 #include "display.h"
 
 // 74HC595:n ohjauspinnit
-const int resetPin = 12;
-const int shiftClockPin = 11;
-const int latchClockPin = 10;
-const int outEnablePin = 9;
-const int serialPin = 8;
+
+const int shiftClockPin = 13;
+const int latchClockPin = 12;
+const int serialPin = 11;
+
+const int resetPin = 9; 
+const int outEnablePin = 8;
+
 
 // Numerot 0-9 (Common Cathode)
 const byte numTable[] =
