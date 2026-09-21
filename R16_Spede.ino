@@ -11,6 +11,10 @@ volatile bool newTimerInterrupt = false;  // for timer interrupt handler
 
 void setup()
 {
+
+initializeLeds();
+
+
   /*
     Initialize here all modules
   */
@@ -18,6 +22,7 @@ void setup()
 
 void loop()
 {
+      show1();
   if(buttonNumber>=0)
   {
      // start the game if buttonNumber == 4

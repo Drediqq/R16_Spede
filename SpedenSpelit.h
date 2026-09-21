@@ -23,7 +23,7 @@ void initializeGame(void);
 
 /*
   checkGame() subroutine is used to check the status
-  of the Game after each player button press.
+  of the Game after each  player button press.
   
   If the latest player button press is wrong, the game stops
   and if the latest press was right, game display is incremented

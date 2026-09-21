@@ -36,7 +36,7 @@ void show1()    //näyttää 0 -> 15 binääriluvuin ledeillä
     
     
     
-    
+    //..-.ö.
     
     /*//tähän vois myös laittaa jonkun while loopin jos tarvii
     for (int i = 0; i <= 15; i ++){
