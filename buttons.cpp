@@ -80,7 +80,7 @@ void buttonPress(uint8_t button) {
   // tarkistetaan onko joku pinni mennyt 1 -> 0
   for (uint8_t pin = firstPin; pin <= lastPin; pin++) {
     if ((omegaButton & (1 << pin)) && !(button & (1 << pin))) {
-      buttonNumber = pin;
+      buttonNumber = pin-1;
     }
   }
 }
