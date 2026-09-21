@@ -9,7 +9,7 @@ for(int i = firstLedPin; i <= lastLedPin; i++){
 
 void setLed(byte ledNumber)
 {
-    digitalWrite(ledNumber, HIGH);
+    digitalWrite(ledNumber+firstLedPin-1, HIGH);
 }
 
 
