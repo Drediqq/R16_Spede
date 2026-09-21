@@ -13,9 +13,10 @@ volatile byte litCount;                  // kuinka monta lediä on yhteensä syt
 
 void setup()
 {
-  /*
-    Initialize here all modules
-  */
+  initializeLeds();
+  initButtonsAndButtonInterrupts();
+  initializeDisplay();
+  initializeTimer()
 }
 
 void loop()
