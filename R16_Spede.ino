@@ -20,7 +20,7 @@ void setup()
 
 void loop()
 {
-  if (buttonNumber == 4)
+  if (buttonNumber >= 0)
   {
     // start the game if buttonNumber == 4
     // check the game if 0<=buttonNumber<4
