@@ -20,7 +20,7 @@ void setup()
 
 void loop()
 {
-  if (buttonNumber >= 0)
+  if (buttonNumber == 4)
   {
     // start the game if buttonNumber == 4
     // check the game if 0<=buttonNumber<4
@@ -36,11 +36,11 @@ void loop()
 void initializeTimer(void)
 {
   // see requirements for the function from SpedenSpelit.h
-  noInterrupts();          // Disable all interrupts while configuring
+  noInterrupts();          // keskeytykset pois päältä
 
-  TCCR1A = 0;              // Clear control registers
+  TCCR1A = 0;              // tyhjätään ohjaus rekisterit
   TCCR1B = 0;
-  TCNT1  = 0;              // Reset counter to 0
+  TCNT1  = 0;              // nollataan laskuri
 
   // asetetaan rekisteri 1 Hz taajuuteen 16 MHz:illä
   // 16MHz / (esiskaalaaja * haluttu taajuus)
@@ -49,9 +49,9 @@ void initializeTimer(void)
 
   TCCR1B |= (1 << WGM12);  // CTC
   TCCR1B |= (1 << CS12) | (1 << CS10); // esiskaalaaja -> 1024
-  TIMSK1 |= (1 << OCIE1A); // Timer1 enable
+  TIMSK1 |= (1 << OCIE1A); // Timer1 enable <- tämä pitää disablettaa sitten jossain kun peli loppuu -> TIMSK1 &= ~(1 << OCIE1A);
 
-  interrupts();             // Re-enable interrupts
+  interrupts();             // keskeytykset päälle
 }
 ISR(TIMER1_COMPA_vect)
 {
