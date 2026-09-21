@@ -1,4 +1,5 @@
 #include "leds.h"
+#include "Arduino.h"
 
 void initializeLeds()
 {
@@ -139,7 +140,7 @@ void show2(int rounds) //vilkuttaa ledejä 0, 1, 2, 3 kiihtyvällä tahdilla
     int odotusaika = 1000;
 
     while (kaydytkierrokset < rounds){      //toistetaan valoshow 'rounds' verran
-        for(int i = 0; i < 4; i++){     //sytytetään ledit yksi kerrallaan
+        for(int i = 1; i <= 4; i++){     //sytytetään ledit yksi kerrallaan
             setLed(i);
             delay(odotusaika);
         }
