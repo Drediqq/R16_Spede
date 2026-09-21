@@ -1,3 +1,5 @@
+#include "timer.h"
+
 void initializeTimer(void)
 {
   // see requirements for the function from SpedenSpelit.h
