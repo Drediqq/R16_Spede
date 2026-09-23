@@ -4,6 +4,9 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+//#define SPEEDUPVALUE 10
+
+
 extern volatile bool newTimerInterrupt;
 
 void initializeTimer(void);
