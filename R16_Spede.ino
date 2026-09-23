@@ -50,10 +50,20 @@ void loop()
     buttonNumber = -1;
   }
 
-  if (newTimerInterrupt == true)
-  {
-    // new random number must be generated
-    // and corresponding let must be activated
+   
+ if (newTimerInterrupt == true)
+  {  
+    // Sammutetaan muut ledit
+    clearAllLeds();
+
+    // Generoidaan satunnainen numero
+    int randomNumber = random(1, 5);
+
+    // Aktivoidaan satunnaista numeroa vastaava ledi
+    setLed(randomNumber);
+    
+    // Käsitellään ajastin interrupti
+    newTimerInterrupt = false;
   }
 }
 
