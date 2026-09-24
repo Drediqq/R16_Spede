@@ -19,7 +19,6 @@ void setup()
   initializeLeds();
   initButtonsAndButtonInterrupts();
   initializeDisplay();
-  initializeTimer();
 }
 
 void loop()
