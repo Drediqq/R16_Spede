@@ -1,6 +1,7 @@
 #include "timer.h"
 #include "settings.h"
 
+
 // Asettaa prescalerin annetun arvon perusteella
 // Ottaa vastaan kokonaisluvun 0, 1, 8, 64, 256, 1024, 
 // jos luku ei ole yksi näistä, palauttaa virheen eikä aseta prescaleria
@@ -26,6 +27,14 @@ void prescalerHelper(uint16_t prescaling) {
       Serial.println("Invalid scaler");
       return;
   }
+
+// TCCR1B
+// [ICNC1] [ICES1] [-----] [WGM13] [WGM12] [CS12] [CS11] [CS10]    | TCCR1B
+// ----------------------------------------------------------------|------------
+// [ x ]   [ x ]   [ x ]   [ x ]   [ x ]   [ 0 ]  [ 1 ]  [ 1 ]     | 0bxxxxx011 
+//                                           |      |      |       |
+//                                           (esim 64 = 011 = 3)
+// -----------------------------------------------------------------------------
   // Syötetään bittiarvo ja asetetaan haluttu scaleri
   TCCR1B = (TCCR1B & ~((1 << CS12) | (1 << CS11) | (1 << CS10))) | scalerBits;
 }
@@ -69,7 +78,7 @@ void initializeTimer() {
 // [ x ]   [ x ]   [ x ]   [ x ]   [ 1 ]   [ 1 ]  [ 0 ]  [ 1 ]     | 0bxxxx1101  
 //                                  CTC      |      |      |       |
 //                                           (esim 1024=101)
-// ------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
   TCCR1B |= (1 << WGM12);  // CTC (Clear Timer on Compare Match)
   prescalerHelper(PRESCALER); // Muutettavissa toisaalla
 // ---------------------------------------------------------------------------------
@@ -87,71 +96,122 @@ void initializeTimer() {
   interrupts();  // Keskeytykset takaisin päälle
 }
 
+
+
+/*
+  kirjotan tän ehkä uusiks emt, se on aika psk
+*/
+
 // Funktio nostaa tai laskee annetun luvun arvoa n% määrällä
 // step: potenssi, inputValue: manipuloitava arvo, stepSize: montako prosenttia arvoa nostetaan, decrease: lasketaanko vai nostetaanko
-int percentStepHelper(int step, int inputValue = 15624, int stepSize = 10, bool decrease = 1) {
+int percentStepHelper(int step, int inputValue = OCR1AVALUE, int stepSize = SPEEDUPVALUE, bool decrease = 1) {
   // näillä lasketaan stepSize% nosto
   float base = 1 + (stepSize * 0.01);  // 1 + (stepSize * 0.01),  esim. 1 + 10(%) * 0.01 = 1.1
-  float value = pow(base, step);       // base^step,              esim. 1.1² (²=step)
+  float multiplier = pow(base, step);       // base^step,              esim. 1.1² (²=step)
 
 
   // Palautetaan stepSize% alennettu arvo, jos decrease on 1
-  if (decrease != 0) {
-    uint16_t rVal = inputValue / value;  //esim. 15624 / 1.1² = 15624 / 1.21 = 12912 = -20%
-    return rVal;
-
-  // Palautetaan stepSize% nostettu arvo, jos decrease on 0
-  } else {
-    uint16_t rVal = inputValue * value;
-    return rVal;
-  }
+  return decreaseByPercentage(inputValue, multiplier);
 }
+
+
+
 // Nollaa timerin
 void resetTimer(){
+// TCNT1 (16-bit Laskuri)
+// [ BIT15 . . . . . . . . . . . . . BIT0 ]     | TCNT1
+// --------------------------------------------------------
+// [ 0 0 0 0 0 0 0 0   0 0 0 0 0 0 0 0          | 0x0000
+//   Nollataan laskurirekisteri
+// --------------------------------------------------------  
   TCNT1 = 0;  
+// --------------------------------------------------------
 }
+
 // Pysäyttää timer1
 void stopTimer() {
-  TIMSK1 &= ~(1 << OCIE1A);         // asetetaan andilla ja notilla timerpinni -> 0, jotta se on hiljaa
-  prescalerHelper(0);   // asettaa ajastimen kokonaan pois päältä
-  TIFR1 |= (1 << OCF1A);           // nollataan tulevat keskeytykset vielä tai oikeastaan ykköstetään :D
+// TIMSK1
+// [-----] [-----] [ICIE1] [-----] [-----] [OCIE1B] [OCIE1A] [TOIE1]    | TIMSK1
+// ---------------------------------------------------------------------|------------
+// [ x ]   [ x ]   [ x ]   [ x ]   [ x ]   [ x ]    [ 0 ]    [ x ]      | 0bxxxxxx0x  
+//                                                    |                 |                  
+//                                          (TIMER1_COMPA_vect)            
+// ----------------------------------------------------------------------------------  
+  TIMSK1 &= ~(1 << OCIE1A);  // asetetaan andilla ja notilla timerpinni hiljaseksi
+// ----------------------------------------------------------------------------------
+  
+// TCCR1B
+// [ICNC1] [ICES1] [-----] [WGM13] [WGM12] [CS12] [CS11] [CS10]    | TCCR1B
+// ----------------------------------------------------------------|------------
+// [ x ]   [ x ]   [ x ]   [ x ]   [ x ]   [ 0 ]  [ 0 ]  [ 0 ]     | 0bxxxxx000  
+//                                           |      |      |       |
+//                                           (      0      )
+// -----------------------------------------------------------------------------
+  prescalerHelper(0);     // asettaa ajastimen kokonaan pois päältä
+// -----------------------------------------------------------------------------
+
+// TIFR1
+// [-----] [-----] [ICF1]  [-----] [-----] [OCF1B]  [OCF1A]  [TOV1]    | TIFR1
+// ---------------------------------------------------------------------|----------------
+// [ x ]   [ x ]   [ x ]   [ x ]   [ x ]   [ x ]    [ 1 ]    [ x ]      | 0bxxxxxx1x  
+//                                                    |                 |                  
+//                                              (keskeytys flagi)       
+// --------------------------------------------------------------------------------------
+  TIFR1 |= (1 << OCF1A);    // nollataan tulevat keskeytykset
+// --------------------------------------------------------------------------------------
 }
 
-// Mahdollisesti staticeiksi nämä katsotaan tarvitaanko niitä muualla
-uint8_t timerCounter = 0; 
-uint8_t timerMultiplier = 0; 
-
-ISR(TIMER1_COMPA_vect) {
 /*
-voi olla että saa koko sisällön tehdä erilliseksi funktioksi
+  nämä pitänee siirtää johonki muualle .h tai .ino ? ehkä oma vars.h kaikille ?
+  timercounteria vois varmaan käyttää tälleen:
+  
+  timerCounter++ kun painaa nappia tai timer tickka
+  jos checkValue palauttaa true (timerCounter >= 10) => timerSpeedUp
+
+  */
+volatile uint8_t timerCounter = 0; 
+volatile uint8_t timerPotency = 0;
+
+/*
+varmaan pitää toi potenssi vielä hirttää ettei se pääse karkuun
+*/
+// nopeuttaa ajastinta asetettujen arvojen verran
+void timerSpeedUp(uint8_t potency, int maxValue = 150){
+  uint16_t value = percentStepHelper(potency);
+    
+  if (isValueUnderN(value, maxValue) == true) { 
+    value = maxValue; // 
+  }
+    
+  OCR1A = value; // Asetetaan laskettu arvo
+}
+
+
+/*
+emt pitäskö näille matikkafunktioillekki tehä vaan joku oma tiedostonsa
 */
 
+// palauttaa true/false jos arvo on yli maksimiarvon
+bool isValueOverN(int value, int maxValue){ //10 tilalle vois ehkä lisätä oman "asetuksen" jos huvittaa
+  return value >= maxValue; // palauttaa true/false riippuen lopputuloksesta
+}
+// palauttaa true/false jos arvo on alle max
+bool isValueUnderN(int value, int maxValue){ //10 tilalle vois ehkä lisätä oman "asetuksen" jos huvittaa
+  return value <= maxValue; // palauttaa true/false riippuen lopputuloksesta
+}
+
+int decreaseByPercentage(uint16_t value, float multiplier) {
+  return value / multiplier;
+}
+
+ISR(TIMER1_COMPA_vect) {
   timerCounter++; // Timer pyörinyt +1 kertaa
-  // --- led bool => true ---
+  newTimerInterrupt = true; 
 
-
-  if (timerCounter >= 10) {
+  if(isValueOverN(timerCounter, 10) == true){
     timerCounter = 0;
-    
-  /*
-
-    Tämän varmaan vois vielä eritellä funktioksi että voi kutsua samaa funkkaria napin painalluksella
-    samasta syystä saattaa tarvita myös yllä olevia muuttujia
-
-  */
-    timerMultiplier++; // Nostojen määrä, toimii samalla potenssina percentStepHelper funktiolle
-
-    uint16_t speed = percentStepHelper(timerMultiplier, OCR1AVALUE, SPEEDUPVALUE);
-    
-    if (speed < 150) { 
-      speed = 150; // Speed minimi on 150, ettei se vahingossakaan pääse 0
-    }
-    
-    OCR1A = speed; // Asetetaan laskettu arvo
+    timerPotency++;
+    timerSpeedUp(timerPotency);
     resetTimer(); // Nollaa ajastin ettei tapahdu kummallisuuksia
   }
-  /*
-  Communicate to loop() that it's time to make new random number.
-  Increase timer interrupt rate after 10 interrupts.
-  */
 }
