@@ -12,6 +12,7 @@ byte matchedCount;                       // kuinka monta lediä pelaaja on paina
 volatile byte sequence[20];              // 20 ledin jälkeen ilman painallusta = häviö
 volatile byte litCount;                  // kuinka monta lediä on yhteensä syttynyt
 bool gameOn = false;
+extern volatile uint8_t timerCounter;
 
 void setup()
 {
@@ -21,35 +22,30 @@ void setup()
   initializeDisplay();
 }
 
+
+
+void buttonGaming(int but){
+    if (gameOn){
+      checkGame(but);
+      timerCounter++;
+    }
+    else{
+      startTheGame(); 
+      //painalluksen tunnistus tänne
+    }
+}
+
+
+
+
 void loop()
 {
   buttonsHandler();
 
   if (buttonNumber >= 0)
   {
-    if (buttonNumber == 1)
-    {
-      writeByte(1, 1);
-      setLed(1);
-    }
-    if (buttonNumber == 2)
-    {
-      writeByte(2, 1);
-      setLed(2);
-    }
-    if (buttonNumber == 3)
-    {
-      writeByte(3, 1);
-      setLed(3);
-    }
-    if (buttonNumber == 4 && newTimerInterrupt == false)
-    {
-      writeByte(4, 1);
-      setLed(4);
-      // startTheGame();
-    }
-    // start the game if buttonNumber == 4
-    // check the game if 0<=buttonNumber<4
+    
+    buttonGaming(buttonNumber);
     buttonNumber = -1;
   }
 
