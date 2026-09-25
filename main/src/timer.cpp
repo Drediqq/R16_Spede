@@ -1,7 +1,6 @@
 #include "timer.h"
 #include "settings.h"
-
-
+#include "helpers.h"
 // Asettaa prescalerin annetun arvon perusteella
 // Ottaa vastaan kokonaisluvun 0, 1, 8, 64, 256, 1024, 
 // jos luku ei ole yksi näistä, palauttaa virheen eikä aseta prescaleria
@@ -52,23 +51,11 @@ void initializeTimer() {
   TCCR1A = 0;  
 // -----------------------------------------------------------------------------------
 
-// TCCR1B
-// [ICNC1]  [ICES1]  [-----]  [WGM13]  [WGM12] [CS12]  [CS11]  [CS10]    | TCCR1B   
-// ----------------------------------------------------------------------|------------
-// [ 0 ]    [ 0 ]    [ 0 ]    [ 0 ]    [ 0 ]   [ 0 ]   [ 0 ]   [ 0 ]     | 0b00000000  
-//   Asetetaan prescaler pois eli cs10,11,12 -> 000                      |
-// -----------------------------------------------------------------------------------
-  TCCR1B = 0;
-// -----------------------------------------------------------------------------------
+//Asetetaan prescaler pois eli cs10,11,12 -> 000           
+  prescalerHelper(0);
 
-// TCNT1 (16-bit Laskuri)
-// [ BIT15 . . . . . . . . . . . . . BIT0 ]     | TCNT1
-// --------------------------------------------------------
-// [ 0 0 0 0 0 0 0 0   0 0 0 0 0 0 0 0          | 0x0000
-//   Nollataan laskurirekisteri
-// --------------------------------------------------------  
-  TCNT1 = 0;
-// ---------------------------------------------------------
+//Nollataan laskurirekisteri
+  resetTimer();
 
   OCR1A = OCR1AVALUE;  // Asetetaan vertailuarvo, jossa keskeytys tapahtuu
 
@@ -82,38 +69,12 @@ void initializeTimer() {
   TCCR1B |= (1 << WGM12);  // CTC (Clear Timer on Compare Match)
   prescalerHelper(PRESCALER); // Muutettavissa toisaalla
 // ---------------------------------------------------------------------------------
-
-// TIMSK1
-// [-----] [-----] [ICIE1] [-----] [-----] [OCIE1B] [OCIE1A] [TOIE1]    | TIMSK1
-// ---------------------------------------------------------------------|------------
-// [ x ]   [ x ]   [ x ]   [ x ]   [ x ]   [ x ]    [ 1 ]    [ x ]      | 0bxxxxxx1x  
-//                                                    |                 |                  
-//                                          (TIMER1_COMPA_vect)            
-// -----------------------------------------------------------------------------------                               
-  TIMSK1 |= (1 << OCIE1A);  // Timer1 Output Compare A Interrupt Enable
-// -----------------------------------------------------------------------------------         
+  
+// käynnistetään ajastin
+  timer1Control(1);   
 
   interrupts();  // Keskeytykset takaisin päälle
 }
-
-
-
-/*
-  kirjotan tän ehkä uusiks emt, se on aika psk
-*/
-
-// Funktio nostaa tai laskee annetun luvun arvoa n% määrällä
-// step: potenssi, inputValue: manipuloitava arvo, stepSize: montako prosenttia arvoa nostetaan, decrease: lasketaanko vai nostetaanko
-int percentStepHelper(int step, int inputValue = OCR1AVALUE, int stepSize = SPEEDUPVALUE, bool decrease = 1) {
-  // näillä lasketaan stepSize% nosto
-  float base = 1 + (stepSize * 0.01);  // 1 + (stepSize * 0.01),  esim. 1 + 10(%) * 0.01 = 1.1
-  float multiplier = pow(base, step);       // base^step,              esim. 1.1² (²=step)
-
-
-  // Palautetaan stepSize% alennettu arvo, jos decrease on 1
-  return decreaseByPercentage(inputValue, multiplier);
-}
-
 
 
 // Nollaa timerin
@@ -128,8 +89,18 @@ void resetTimer(){
 // --------------------------------------------------------
 }
 
-// Pysäyttää timer1
-void stopTimer() {
+void timer1Control(bool state){
+  if(state){
+// TIMSK1
+// [-----] [-----] [ICIE1] [-----] [-----] [OCIE1B] [OCIE1A] [TOIE1]    | TIMSK1
+// ---------------------------------------------------------------------|------------
+// [ x ]   [ x ]   [ x ]   [ x ]   [ x ]   [ x ]    [ 1 ]    [ x ]      | 0bxxxxxx1x  
+//                                                    |                 |                  
+//                                          (TIMER1_COMPA_vect)            
+// -----------------------------------------------------------------------------------                               
+  TIMSK1 |= (1 << OCIE1A);  // Timer1 Output Compare A Interrupt Enable
+// -----------------------------------------------------------------------------------    
+  }else{
 // TIMSK1
 // [-----] [-----] [ICIE1] [-----] [-----] [OCIE1B] [OCIE1A] [TOIE1]    | TIMSK1
 // ---------------------------------------------------------------------|------------
@@ -137,9 +108,15 @@ void stopTimer() {
 //                                                    |                 |                  
 //                                          (TIMER1_COMPA_vect)            
 // ----------------------------------------------------------------------------------  
-  TIMSK1 &= ~(1 << OCIE1A);  // asetetaan andilla ja notilla timerpinni hiljaseksi
+  TIMSK1 &= ~(1 << OCIE1A);  // asetetaan timer pin 0
 // ----------------------------------------------------------------------------------
-  
+  }
+}
+
+// Pysäyttää timer1:n
+void stopTimer() {
+  timer1Control(0);
+
 // TCCR1B
 // [ICNC1] [ICES1] [-----] [WGM13] [WGM12] [CS12] [CS11] [CS10]    | TCCR1B
 // ----------------------------------------------------------------|------------
@@ -159,30 +136,24 @@ void stopTimer() {
 // --------------------------------------------------------------------------------------
   TIFR1 |= (1 << OCF1A);    // nollataan tulevat keskeytykset
 // --------------------------------------------------------------------------------------
+
+timerPotency = 0;
 }
 
-/*
-  nämä pitänee siirtää johonki muualle .h tai .ino ? ehkä oma vars.h kaikille ?
-  timercounteria vois varmaan käyttää tälleen:
-  
-  timerCounter++ kun painaa nappia tai timer tickka
-  jos checkValue palauttaa true (timerCounter >= 10) => timerSpeedUp
 
-  */
-volatile uint8_t timerCounter = 0; 
-volatile uint8_t timerPotency = 0;
 
 /*
-varmaan pitää toi potenssi vielä hirttää ettei se pääse karkuun
+  varmaan pitää toi potenssi vielä hirttää ettei se pääse karkuun
 */
 // nopeuttaa ajastinta
 // ottaa vastaan potenssin ja minimiarvon
 void timerSpeedUp(uint8_t potency, int minValue){
-  uint16_t value = percentStepHelper(potency);
+  float multiplier = getMultiplier(SPEEDUPVALUE, potency);
+  uint16_t value = decreaseByPercent(OCR1AVALUE, multiplier);
   
-  // odotetaan falsea vastaukseksi
+  // 
   if (!isValueOverN(value, minValue)) { 
-    value = 1; // 
+    value = 1; 
   }
     
   OCR1A = value; // Asetetaan laskettu arvo
@@ -190,17 +161,9 @@ void timerSpeedUp(uint8_t potency, int minValue){
 
 
 /*
-emt pitäskö näille matikkafunktioillekki tehä vaan joku oma tiedostonsa
+    emt pitäskö näille matikkafunktioillekki tehä vaan joku oma tiedostonsa
 */
 
-// palauttaa true/false jos arvo on yli maksimiarvon
-bool isValueOverN(int value, int maxValue){ //10 tilalle vois ehkä lisätä oman "asetuksen" jos huvittaa
-  return value >= maxValue; // palauttaa true/false riippuen lopputuloksesta
-}
-
-int decreaseByPercentage(uint16_t value, float multiplier) {
-  return value / multiplier;
-}
 
 
 ISR(TIMER1_COMPA_vect) {
@@ -210,6 +173,9 @@ ISR(TIMER1_COMPA_vect) {
   if(isValueOverN(timerCounter, 10) == true){
     timerCounter = 0;
     timerPotency++;
+    Serial.print("timerpot: ");
+    Serial.println(timerPotency); 
+
     timerSpeedUp(timerPotency, 150);
     resetTimer(); // Nollaa ajastin ettei tapahdu kummallisuuksia
   }

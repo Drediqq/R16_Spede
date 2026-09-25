@@ -1,6 +1,5 @@
 #include "logic.h"
 #include "Arduino.h"
-#include "SpedenSpelit.h"
 #include "display.h"
 #include "timer.h"
 #include "leds.h"
@@ -20,7 +19,6 @@ void checkGame(byte nbrOfButtonPush) // tarkistaa mitä on painettu seuraavaa le
   if (nbrOfButtonPush == expected) //  && matchedCount < litCount ei pitäs olla tarpeellinen
   {
     matchedCount++;
-    Serial.println(matchedCount);
     showResult(matchedCount);
   }
   else
@@ -33,7 +31,7 @@ void checkGame(byte nbrOfButtonPush) // tarkistaa mitä on painettu seuraavaa le
     Serial.println("Score: ");
     Serial.println(matchedCount);
     // --- test ---
-    
+
     stopTimer();
     showResult(matchedCount);
     clearAllLeds();

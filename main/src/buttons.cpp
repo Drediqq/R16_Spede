@@ -1,4 +1,5 @@
 #include "buttons.h"
+#include "helpers.h"
 
 void buttonsHandler();
 void buttonPress(uint8_t);
@@ -41,10 +42,7 @@ void initButtonsAndButtonInterrupts(void){
 ISR(PCINT2_vect) {
    dState = PIND;
 }
-// millistimer, palauttaa true/false
-bool millisHelper(uint32_t time, uint16_t compareValue){
-  return (millis() - time) >= compareValue; //palauttaa true/false
-}
+
 
 // debouncettaa napit ja tarkistaa onko nappi ollut samassa arvossa tarpeeksi kauan ettei se ole bounce
 void buttonsHandler() {
