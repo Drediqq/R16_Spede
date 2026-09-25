@@ -1,5 +1,5 @@
 .vscode
-.gitignore
 *.clangd
 *.yaml
 *.lua
+*.code-workspace
