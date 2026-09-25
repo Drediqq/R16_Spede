@@ -3,3 +3,4 @@
 *.clangd
 *.yaml
 *.lua
+*.code-workspace

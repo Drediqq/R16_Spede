@@ -16,18 +16,28 @@ extern volatile uint8_t timerCounter;
 
 void setup()
 {
+  // -- testing --
   Serial.begin(9600);
+  Serial.println("Started");
+  // -- testing --
+
   initializeLeds();
   initButtonsAndButtonInterrupts();
   initializeDisplay();
 }
 
+void testCode(){
+  if (buttonNumber > 0){
+    Serial.print("Button press: ");
+    Serial.println(buttonNumber);
+  }
+}
 
-
+// painallukset, ehkä siirretään muualle?
 void buttonGaming(int but){
     if (gameOn){
       checkGame(but);
-      timerCounter++;
+      timerCounter++; 
     }
     else{
       startTheGame(); 
@@ -35,16 +45,13 @@ void buttonGaming(int but){
     }
 }
 
-
-
-
 void loop()
 {
+  testCode();
   buttonsHandler();
 
   if (buttonNumber >= 0)
   {
-    
     buttonGaming(buttonNumber);
     buttonNumber = -1;
   }
@@ -54,12 +61,31 @@ void loop()
   {  
     // Sammutetaan muut ledit
     clearAllLeds();
+    
+    static byte oldNumber = 0; // tähän tallennetaan edellinen arvottu luku
+    static byte randomNumber = 0; // arvottava luku
 
     // Generoidaan satunnainen numero
-    int randomNumber = random(1, 5);
+    while(randomNumber == oldNumber){
+      randomNumber = random(1, 5);
+    }
+    oldNumber = randomNumber;
+    
+
+    // ---- TEST -----
+    Serial.print("led number: ");
+    Serial.println(randomNumber);
+    // ---- TEST -----
+    
 
     // Aktivoidaan satunnaista numeroa vastaava ledi
     setLed(randomNumber);
+    
+    // laitetaanpas sinne sequenceenkin se numero :D
+    sequence[litCount] = randomNumber;
+    
+    // nostetaan myös litcounttia
+    litCount++;
     
     // Käsitellään ajastin interrupti
     newTimerInterrupt = false;

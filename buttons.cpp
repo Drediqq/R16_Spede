@@ -1,7 +1,4 @@
 #include "buttons.h"
-#include "Arduino.h"
-#include <avr/io.h>
-
 
 void buttonsHandler();
 void buttonPress(uint8_t);
@@ -43,7 +40,11 @@ void initButtonsAndButtonInterrupts(void){
 // kaikki nappi keskeytykset kutsuu tätä ISRää ja tallennetaan dStateen miten napit on painettu
 ISR(PCINT2_vect) {
    dState = PIND;
-}  
+}
+// millistimer, palauttaa true/false
+bool millisHelper(uint32_t time, uint16_t compareValue){
+  return (millis() - time) >= compareValue; //palauttaa true/false
+}
 
 // debouncettaa napit ja tarkistaa onko nappi ollut samassa arvossa tarpeeksi kauan ettei se ole bounce
 void buttonsHandler() {
@@ -56,7 +57,7 @@ void buttonsHandler() {
     lastPressedButton = pressedButton;
   }
   // jos nappi ei ole hypännyt määritetyn ajan sisällä oletetaan että se on oikea painallus
-  if ((millis() - debounceTimer) >= debounceDelay) {
+  if (millisHelper(debounceTimer, debounceDelay)) {
     // tarkistetaan vielä että napin tila on vaihtunut 1 -> 0 tai 0 -> 1
     if(pressedButton != stableState){ 
       buttonPress(pressedButton);

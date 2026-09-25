@@ -15,7 +15,7 @@ int percentStepHelper(int, int, int, bool); // laskee n% laskun/korotuksen annet
 void resetTimer(void); // asettaa ajastimen 0
 void stopTimer(void); // pysäyttää ajastimen kokonaan asettamalla prescalerin 000
 void timerSpeedUp(void); // nopeuttaa ajastinta
-bool isValueOVerN(int value, int maxValue); // tarkistaa onko ajastin pöyrinyt nx
+bool isValueOverN(int value, int maxValue); // tarkistaa onko ajastin pöyrinyt nx
 bool isValueUnderN(int value, int maxValue);
 int decreaseByPercentage(uint16_t value, float multiplier); // palauttaa 
 ISR(TIMER1_COMPA_vect); 

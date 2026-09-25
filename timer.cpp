@@ -175,12 +175,14 @@ volatile uint8_t timerPotency = 0;
 /*
 varmaan pitää toi potenssi vielä hirttää ettei se pääse karkuun
 */
-// nopeuttaa ajastinta asetettujen arvojen verran
-void timerSpeedUp(uint8_t potency, int maxValue = 150){
+// nopeuttaa ajastinta
+// ottaa vastaan potenssin ja minimiarvon
+void timerSpeedUp(uint8_t potency, int minValue){
   uint16_t value = percentStepHelper(potency);
-    
-  if (isValueUnderN(value, maxValue) == true) { 
-    value = maxValue; // 
+  
+  // odotetaan falsea vastaukseksi
+  if (!isValueOverN(value, minValue)) { 
+    value = 1; // 
   }
     
   OCR1A = value; // Asetetaan laskettu arvo
@@ -195,14 +197,11 @@ emt pitäskö näille matikkafunktioillekki tehä vaan joku oma tiedostonsa
 bool isValueOverN(int value, int maxValue){ //10 tilalle vois ehkä lisätä oman "asetuksen" jos huvittaa
   return value >= maxValue; // palauttaa true/false riippuen lopputuloksesta
 }
-// palauttaa true/false jos arvo on alle max
-bool isValueUnderN(int value, int maxValue){ //10 tilalle vois ehkä lisätä oman "asetuksen" jos huvittaa
-  return value <= maxValue; // palauttaa true/false riippuen lopputuloksesta
-}
 
 int decreaseByPercentage(uint16_t value, float multiplier) {
   return value / multiplier;
 }
+
 
 ISR(TIMER1_COMPA_vect) {
   timerCounter++; // Timer pyörinyt +1 kertaa
@@ -211,7 +210,7 @@ ISR(TIMER1_COMPA_vect) {
   if(isValueOverN(timerCounter, 10) == true){
     timerCounter = 0;
     timerPotency++;
-    timerSpeedUp(timerPotency);
+    timerSpeedUp(timerPotency, 150);
     resetTimer(); // Nollaa ajastin ettei tapahdu kummallisuuksia
   }
 }
