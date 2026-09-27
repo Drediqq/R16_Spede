@@ -12,5 +12,6 @@ extern bool gameOn;
 void checkGame(byte);
 void initializeGame(void);
 void startTheGame(void);
+void endGame(void);
 
 #endif
