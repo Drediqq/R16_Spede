@@ -69,7 +69,7 @@ void buttonGaming(int but)
 void loop()
 {
   buttonsHandler();
-  isItTime();
+  
   if (buttonNumber > 0)
   {
     buttonGaming(buttonNumber);
@@ -113,6 +113,7 @@ void loop()
 
       // nostetaan myös litcounttia
       litCount++;
+      isItTime();
 
       // ---- TESTING -----
       testCode(randomNumber);
