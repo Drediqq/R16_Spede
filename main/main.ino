@@ -44,7 +44,6 @@ void buttonGaming(int but)
   if (gameOn)
   {
     checkGame(but);
-    timerCounter++;
   }
   else
   {

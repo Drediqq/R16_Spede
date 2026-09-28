@@ -1,4 +1,5 @@
 #include "timer.h"
+#include "logic.h"
 #include "settings.h"
 #include "helpers.h"
 
@@ -187,13 +188,14 @@ void timerSpeedUp(uint8_t potency, int minValue){
 ###### IsItTime ######
 #####################
 */
-// nostaa nopeutta jos timercounter >= speedupinterval
+// nostaa nopeutta jos litcount % SPEEDUPINTERVAL == 0
 void isItTime(){
-  if(timerCounter >= SPEEDUPINTERVAL){
-    timerCounter = 0;
-    timerPotency++;
-    timerSpeedUp(timerPotency, MAXSPEED);
-    resetTimer(); // Nollaa ajastin ettei tapahdu kummallisuuksia
+  if(litCount != 0){
+    if((litCount % SPEEDUPINTERVAL) == 0){
+      timerPotency++;
+      timerSpeedUp(timerPotency, MAXSPEED);
+      resetTimer(); // Nollaa ajastin ettei tapahdu kummallisuuksia
+    }
   }
 }
 
@@ -203,7 +205,5 @@ void isItTime(){
 ##############################
 */
 ISR(TIMER1_COMPA_vect) {
-  timerCounter++; // Timer pyörinyt +1 kertaa
   newTimerInterrupt = true; 
-  isItTime();  // jos mainloopissa nii tää pois
 }
