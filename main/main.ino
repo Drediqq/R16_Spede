@@ -39,7 +39,6 @@ void testCode(int sweet) {
 void buttonGaming(int but) {
   if (gameOn) {
     checkGame(but);
-    timerCounter++;
   } else {
     switch (but) {
     case 1:
@@ -61,7 +60,9 @@ void buttonGaming(int but) {
 
 void loop() {
   buttonsHandler();
-
+  isItTime();
+  
+  
   if (buttonNumber > 0) {
     buttonGaming(buttonNumber);
     buttonNumber = -1;
