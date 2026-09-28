@@ -1,6 +1,12 @@
 #include "timer.h"
 #include "settings.h"
 #include "helpers.h"
+
+/*
+###############################
+###### Prescaler Helper ######
+#############################
+*/
 // Asettaa prescalerin annetun arvon perusteella
 // Ottaa vastaan kokonaisluvun 0, 1, 8, 64, 256, 1024, 
 // jos luku ei ole yksi näistä, palauttaa virheen eikä aseta prescaleria
@@ -38,6 +44,11 @@ void prescalerHelper(uint16_t prescaling) {
   TCCR1B = (TCCR1B & ~((1 << CS12) | (1 << CS11) | (1 << CS10))) | scalerBits;
 }
 
+/*
+###############################
+###### Initialize Timer ######
+#############################
+*/
 // Asettaa ajastimelle tarpeelliset bitit oikeisiin asentoihin
 void initializeTimer() {
   noInterrupts();  // Keskeytykset pois päältä
@@ -71,7 +82,7 @@ void initializeTimer() {
 // ---------------------------------------------------------------------------------
   
 // käynnistetään ajastin
-  timer1Control(1);   
+  timerControl(1);   
 
   interrupts();  // Keskeytykset takaisin päälle
 }
@@ -89,7 +100,13 @@ void resetTimer(){
 // --------------------------------------------------------
 }
 
-void timer1Control(bool state){
+/*
+###########################
+###### timerControl ######
+#########################
+*/
+// asettaa ajastimen päälle tai pois syötetyn boolin perusteella
+void timerControl(bool state){
   if(state){
 // TIMSK1
 // [-----] [-----] [ICIE1] [-----] [-----] [OCIE1B] [OCIE1A] [TOIE1]    | TIMSK1
@@ -113,9 +130,15 @@ void timer1Control(bool state){
   }
 }
 
-// Pysäyttää timer1:n
+
+/*
+########################
+###### stopTimer ######
+######################
+*/
+// Pysäyttää timerin kokonaan
 void stopTimer() {
-  timer1Control(0);
+  timerControl(0);
 
 // TCCR1B
 // [ICNC1] [ICES1] [-----] [WGM13] [WGM12] [CS12] [CS11] [CS10]    | TCCR1B
@@ -137,46 +160,50 @@ void stopTimer() {
   TIFR1 |= (1 << OCF1A);    // nollataan tulevat keskeytykset
 // --------------------------------------------------------------------------------------
 
-timerPotency = 0;
+timerPotency = 0; // asettaa nopeuskertoimen 0
 }
 
-
-
 /*
-  varmaan pitää toi potenssi vielä hirttää ettei se pääse karkuun
+###########################
+###### timerSpeedUp ######
+#########################
 */
 // nopeuttaa ajastinta
 // ottaa vastaan potenssin ja minimiarvon
 void timerSpeedUp(uint8_t potency, int minValue){
-  float multiplier = getMultiplier(SPEEDUPVALUE, potency);
-  uint16_t value = decreaseByPercent(OCR1AVALUE, multiplier);
+  float multiplier = multiplierHelper(SPEEDUPVALUE, potency);
+  uint16_t value = percentReductionHelper(OCR1AVALUE, multiplier);
   
   // 
-  if (!isValueOverN(value, minValue)) { 
-    value = 1; 
+  if (value > minValue) { 
+    value = minValue; 
   }
     
   OCR1A = value; // Asetetaan laskettu arvo
 }
 
+/*
+#######################
+###### IsItTime ######
+#####################
+*/
+// nostaa nopeutta jos timercounter >= speedupinterval
+void isItTime(){
+  if(timerCounter >= SPEEDUPINTERVAL){
+    timerCounter = 0;
+    timerPotency++;
+    timerSpeedUp(timerPotency, MAXSPEED);
+    resetTimer(); // Nollaa ajastin ettei tapahdu kummallisuuksia
+  }
+}
 
 /*
-    emt pitäskö näille matikkafunktioillekki tehä vaan joku oma tiedostonsa
+################################
+###### Interrupt service ######
+##############################
 */
-
-
-
 ISR(TIMER1_COMPA_vect) {
   timerCounter++; // Timer pyörinyt +1 kertaa
   newTimerInterrupt = true; 
-
-  if(isValueOverN(timerCounter, 10) == true){
-    timerCounter = 0;
-    timerPotency++;
-    Serial.print("timerpot: ");
-    Serial.println(timerPotency); 
-
-    timerSpeedUp(timerPotency, 150);
-    resetTimer(); // Nollaa ajastin ettei tapahdu kummallisuuksia
-  }
+  isItTime();  // jos mainloopissa nii tää pois
 }

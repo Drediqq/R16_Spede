@@ -12,12 +12,10 @@ extern volatile uint8_t timerPotency;
 
 void initializeTimer(void); // alustaa ja käynnistää timerin
 void prescalerHelper(uint16_t scale); //asettaa prescalerin pyydettyyn arvoon
-void timer1Control(bool state);
+void timerControl(bool state);
 void resetTimer(void); // asettaa ajastimen 0
 void stopTimer(void); // pysäyttää ajastimen kokonaan asettamalla prescalerin 000
 void timerSpeedUp(void); // nopeuttaa ajastinta
-bool isValueOverN(int value, int maxValue); // tarkistaa onko ajastin pöyrinyt nx
-float getMultiplier(int percent, int potency);
-int decreaseByPercent(uint16_t value, float multiplier); // palauttaa 
+void isItTime(); // tarkistetaan pitääkö vauhtia nostaa  ---- vois ehkä kutsua mainloopissa? ----
 ISR(TIMER1_COMPA_vect); 
 #endif
