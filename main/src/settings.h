@@ -7,9 +7,17 @@
 #### Pelin asetukset #####
 ##########################
 */
+#define ARR_LEN 5 // tallennettavien tulosten määrä // max 1024 8 bittistä arvoa, inttejä sopii 512 :D
 
+// pelin nopeus
 #define STARTSPEED 1 // turha right now, vois mahdollisesti laskea koko ocr1a arvon
 #define SPEEDUPVALUE 10 // n% kiihtyvyys
+#define SPEEDUPINTERVAL 10 // montako lediä sytytetään kunnes nostetaan vauhtia
+#define MAXSPEED 150 // pienempi = nopeampi
+
+// Nappien debounce
+#define DEBOUNCE_DELAY 70 // 70 on aika hyvä pienille painonapeille9
+
 
 // asetetaan rekisteri 1 Hz taajuuteen 16 MHz:illä
 // 16MHz / (esiskaalaaja * haluttu taajuus)

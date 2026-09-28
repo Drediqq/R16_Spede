@@ -1,5 +1,6 @@
 #include "buttons.h"
 #include "helpers.h"
+#include "settings.h"
 
 void buttonsHandler();
 void buttonPress(uint8_t);
@@ -11,24 +12,6 @@ uint8_t lastPressedButton = 0xff;
 // edellinen arvo joka ei debouncettanut
 uint8_t stableState = 0xff;
 
-// debounce ajastin ja delay jolla säädetään kuinka paljon aikaa välissä pitää olla vähintään
-unsigned long debounceTimer = 0;
-const unsigned long debounceDelay = 70; 
-
-
-// asettaa keskeytykset oikeisiin osoitteisiin riippuen siitä mikä pinni on kyseessä
-void interruptHelper(uint8_t pin){
-  if(pin <= 7){
-    PCICR |= (1 << PCIE2);
-    PCMSK2 |= (1 << pin);
-  }else if(pin <= 13){
-    PCICR |= (1 << PCIE0);
-    PCMSK0 |= (1 << pin);
-  }else if(pin <= 19){
-    PCICR |= (1 << PCIE1);
-    PCMSK1 |= (1 << pin);
-  }
-}
 
 // alustaa pinnit ja niiden keskeytykset
 void initButtonsAndButtonInterrupts(void){
@@ -46,6 +29,7 @@ ISR(PCINT2_vect) {
 
 // debouncettaa napit ja tarkistaa onko nappi ollut samassa arvossa tarpeeksi kauan ettei se ole bounce
 void buttonsHandler() {
+  static unsigned long debounceTimer = 0;
   //otetaan muuttujaan keskeytyksen kirjoittama arvo
   uint8_t pressedButton = dState;
 
@@ -55,7 +39,7 @@ void buttonsHandler() {
     lastPressedButton = pressedButton;
   }
   // jos nappi ei ole hypännyt määritetyn ajan sisällä oletetaan että se on oikea painallus
-  if (millisHelper(debounceTimer, debounceDelay)) {
+  if (millisHelper(debounceTimer, DEBOUNCE_DELAY)) {
     // tarkistetaan vielä että napin tila on vaihtunut 1 -> 0 tai 0 -> 1
     if(pressedButton != stableState){ 
       buttonPress(pressedButton);
