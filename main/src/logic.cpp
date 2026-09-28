@@ -14,9 +14,8 @@ void checkGame(byte nbrOfButtonPush) // tarkistaa mitä on painettu seuraavaa le
   // --
 
   byte expected = sequence[matchedCount % 20]; // sequence on 20 paikan ring buffer
- 
-  
-  if (nbrOfButtonPush == expected) //  && matchedCount < litCount ei pitäs olla tarpeellinen
+
+  if (nbrOfButtonPush == expected && matchedCount < litCount) // painallus ennen ekaa lediä/kun niitä ei ole ja tuplapainallus = väärin
   {
     matchedCount++;
     showResult(matchedCount);
@@ -32,10 +31,7 @@ void checkGame(byte nbrOfButtonPush) // tarkistaa mitä on painettu seuraavaa le
     Serial.println(matchedCount);
     // --- test ---
 
-    stopTimer();
-    showResult(matchedCount);
-    clearAllLeds();
-    gameOn = false;
+    endGame();
   }
 }
 
@@ -46,6 +42,7 @@ void initializeGame() // nollaa pelin counterit ja flagit uutta peliä varten
   buttonNumber = -1;
   newTimerInterrupt = false;
   randomSeed(analogRead(A1));
+  showResult(0);
 }
 
 void startTheGame()
@@ -55,5 +52,12 @@ void startTheGame()
   gameOn = true;
   initializeGame();
   initializeTimer();
-  
+}
+
+void endGame()
+{
+  stopTimer();
+  showResult(matchedCount);
+  clearAllLeds();
+  gameOn = false;
 }

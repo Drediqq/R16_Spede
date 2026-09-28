@@ -9,14 +9,15 @@
 // loop() function and interrupt handlers
 volatile int buttonNumber = -1;          // for buttons interrupt handler
 volatile bool newTimerInterrupt = false; // for timer interrupt handler
-byte matchedCount; // kuinka monta lediä pelaaja on painanut oikein putkeen
-volatile byte sequence[20]; // 20 ledin jälkeen ilman painallusta = häviö
-volatile byte litCount;     // kuinka monta lediä on yhteensä syttynyt
+byte matchedCount;                       // kuinka monta lediä pelaaja on painanut oikein putkeen
+volatile byte sequence[20];              // 20 ledin jälkeen ilman painallusta = häviö
+volatile byte litCount;                  // kuinka monta lediä on yhteensä syttynyt
 bool gameOn = false;
 volatile uint8_t timerCounter = 0;
 volatile uint8_t timerPotency = 0; // katellaan jos tätä tarvii muualla ku timer.cpp
 
-void setup() {
+void setup()
+{
   // -- testing --
   Serial.begin(9600);
   Serial.println("Started");
@@ -28,20 +29,27 @@ void setup() {
 }
 
 // ---- TESTING -----
-void testCode(int sweet) {
-  if (gameOn) {
+void testCode(int sweet)
+{
+  if (gameOn)
+  {
     buttonNumber = sweet;
   }
 }
 // ---- TESTING ----
 
 // painallukset, ehkä siirretään muualle?
-void buttonGaming(int but) {
-  if (gameOn) {
+void buttonGaming(int but)
+{
+  if (gameOn)
+  {
     checkGame(but);
     timerCounter++;
-  } else {
-    switch (but) {
+  }
+  else
+  {
+    switch (but)
+    {
     case 1:
       // lähtölaskenta tähän ?
       startTheGame();
@@ -59,46 +67,57 @@ void buttonGaming(int but) {
   }
 }
 
-void loop() {
+void loop()
+{
   buttonsHandler();
 
-  if (buttonNumber > 0) {
+  if (buttonNumber > 0)
+  {
     buttonGaming(buttonNumber);
     buttonNumber = -1;
   }
 
-  if (newTimerInterrupt == true) {
-    // Sammutetaan muut ledit
-    clearAllLeds();
+  if (newTimerInterrupt == true)
+  {
+    newTimerInterrupt = false;              // nollataan heti
+    byte pending = litCount - matchedCount; // monta painamatonta lediä on jonossa
 
-    static byte oldNumber = 0;    // tähän tallennetaan edellinen arvottu luku
-    static byte randomNumber = 0; // arvottava luku
-
-    // Generoidaan satunnainen numero
-    while (randomNumber == oldNumber) {
-      randomNumber = random(1, 5);
+    if (pending >= 20) // 20 painamatonta lediä = häviö
+    {
+      endGame();
     }
-    oldNumber = randomNumber;
+    else
+    {
+      // Sammutetaan muut ledit
+      clearAllLeds();
 
-    // ---- TEST -----
-    Serial.print("led number: ");
-    Serial.println(randomNumber);
-    // ---- TEST -----
+      static byte oldNumber = 0;    // tähän tallennetaan edellinen arvottu luku
+      static byte randomNumber = 0; // arvottava luku
 
-    // Aktivoidaan satunnaista numeroa vastaava ledi
-    setLed(randomNumber);
+      // Generoidaan satunnainen numero
+      while (randomNumber == oldNumber)
+      {
+        randomNumber = random(1, 5);
+      }
+      oldNumber = randomNumber;
 
-    // laitetaanpas sinne sequenceenkin se numero :D
-    sequence[litCount] = randomNumber;
+      // ---- TEST -----
+      Serial.print("led number: ");
+      Serial.println(randomNumber);
+      // ---- TEST -----
 
-    // nostetaan myös litcounttia
-    litCount++;
+      // Aktivoidaan satunnaista numeroa vastaava ledi
+      setLed(randomNumber);
 
-    // Käsitellään ajastin interrupti
-    newTimerInterrupt = false;
+      // laitetaanpas sinne sequenceenkin se numero :D
+      sequence[litCount % 20] = randomNumber;
 
-    // ---- TESTING -----
-    testCode(randomNumber);
-    // ---- TESTING -----
+      // nostetaan myös litcounttia
+      litCount++;
+
+      // ---- TESTING -----
+      testCode(randomNumber);
+      // ---- TESTING -----
+    }
   }
 }
