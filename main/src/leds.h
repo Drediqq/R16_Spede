@@ -1,9 +1,12 @@
 #ifndef LEDS_H
 #define LEDS_H
 #include <Arduino.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
 
 const byte firstLedPin = 16;
 const byte lastLedPin = 19;
+extern bool gameOn;
 
 
 /*
