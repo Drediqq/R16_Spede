@@ -8,11 +8,6 @@ const int serialPin = 11; // siirtää dataa sarjamuodossa rekisteriin.
 const int resetPin = 9; // siirtorekisterin reset-pinni. 
 const int outEnablePin = 8; // siirtorekisterin lähtöjen sallinta. 
 
-/*const int resetPin = 12; // siirtorekisterin reset-pinni.
-const int shiftClockPin = 11; // siirtorekisterin kellopinni. Siirtää dataa rekisteriin.
-const int latchClockPin = 10; // siirtorekisterin lukituspinni. lukitaan LOW->HIGH siirtymä, jolloin siirtorekisterin sisältö kopioidaan lähtöihin.
-const int outEnablePin = 9; // siirtorekisterin lähtöjen sallinta.
-const int serialPin = 8; // siirtää dataa sarjamuodossa rekisteriin.*/
 
 // Numerot 0-9 binäärimuodossa (Common Cathode 7-segmenttinäyttöä käytettäessä) 
 // Jos halutaan käyttää Common Anode -näyttöä, niin binäärimuodot pitää invertoida (eli 0b00111111 -> 0b11000000 jne.)
@@ -44,7 +39,7 @@ void initializeDisplay(void) // alustetaan siirtorekisterin ohjauspinnit
 }
 
 
-void writeByte(uint8_t bits,bool last) 
+void writeByte(uint8_t bits,bool last)  
 { 
    if(bits >= sizeof(numTable)) // Vältetään luvut, jotka ei ole 0-9 välillä, koska numTable sisältää vain luvut 0-9. Jos luku on suurempi kuin 9, ei tehdä mitään.
   {
