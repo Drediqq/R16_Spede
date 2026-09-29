@@ -2,7 +2,7 @@
 #include "settings.h"
 #include "score.h"
 #include "helpers.h"
-
+#include "EEPROM.h"
 
 byte savedScores[ARR_LEN] = {0}; // tulostaulu
 
@@ -51,10 +51,7 @@ bool checkScore(byte newScore){
     return 1;
 }
 
-// !!!!!!!!!!!!!!
-// nää nyt riippuu aika paljo siitä että pitääkö meidän manipuloida 
-// sitä EEPROMia manuaalisesti vai mahtaako saada käyttää EEPROM.h kirjastoa
-// !!!!!!!!!!!!!!
+
 
 // Note: An EEPROM write takes 3.3 ms to complete. 
 // The EEPROM memory has a specified life of 100,000 write/erase cycles, 
@@ -65,9 +62,9 @@ bool checkScore(byte newScore){
 // jos päätetään käyttää 16bittisiä niin sitten oletan että se vie sit osoitteet 1 ja 2
 // ja arvo on 0-65535
 
-// asettaa scoret eepromille
+// kirjoittaa scoret eepromille
 void writeEEPROM(){
-    // EEPROM.write(...);
+    //EEPROM.put(...);
 }
 // päivittää scoret eepromille, käytetään kun sinne eepromille on jo kirjoitettu jotain
 void updateEEPROM(){

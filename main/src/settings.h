@@ -7,6 +7,7 @@
 #### Pelin asetukset #####
 ##########################
 */
+// Score
 #define ARR_LEN 5 // tallennettavien tulosten määrä // max 1024 8 bittistä arvoa, inttejä sopii 512 :D
 
 // pelin nopeus
@@ -15,7 +16,7 @@
 #define SPEEDUPINTERVAL 10 // montako lediä sytytetään kunnes nostetaan vauhtia
 #define MAXSPEED 150 // pienempi = nopeampi
 
-// Nappien debounce
+// Napit
 #define DEBOUNCE_DELAY 70 // 70 on aika hyvä pienille painonapeille9
 
 

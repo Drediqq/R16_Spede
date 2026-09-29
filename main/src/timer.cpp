@@ -192,14 +192,9 @@ void timerSpeedUp(uint8_t potency, int minValue){
 */
 // nostaa nopeutta jos litcount % SPEEDUPINTERVAL == 0
 void isItTime(){
-  
   if(litCount != 0){
-    Serial.print("litco:: ");
-    Serial.println(litCount);
     if((litCount % SPEEDUPINTERVAL) == 0){
       timerPotency++;
-      Serial.print("Timerpotency: ");
-      Serial.println(timerPotency);
       timerSpeedUp(timerPotency, MAXSPEED);
       resetTimer(); // Nollaa ajastin ettei tapahdu kummallisuuksia
     }

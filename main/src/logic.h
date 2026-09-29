@@ -6,7 +6,7 @@ extern volatile int buttonNumber;
 extern volatile bool newTimerInterrupt;
 extern byte matchedCount;
 extern volatile byte sequence[20];
-extern volatile byte litCount;
+extern volatile int litCount;
 extern bool gameOn;
 
 void checkGame(byte);

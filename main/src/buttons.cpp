@@ -2,15 +2,10 @@
 #include "helpers.h"
 #include "settings.h"
 
-void buttonsHandler();
-void buttonPress(uint8_t);
 
-// Digitaali portin arvo
-volatile uint8_t dState = 0xFF;
-// edellisen painalluksen arvo
-uint8_t lastPressedButton = 0xff;
-// edellinen arvo joka ei debouncettanut
-uint8_t stableState = 0xff;
+volatile uint8_t dState = 0xFF; // Digitaali portin arvo
+uint8_t lastPressedButton = 0xff; // edellisen painalluksen arvo
+uint8_t stableState = 0xff; // edellinen arvo joka ei debouncettanut
 
 
 // alustaa pinnit ja niiden keskeytykset
@@ -30,8 +25,7 @@ ISR(PCINT2_vect) {
 // debouncettaa napit ja tarkistaa onko nappi ollut samassa arvossa tarpeeksi kauan ettei se ole bounce
 void buttonsHandler() {
   static unsigned long debounceTimer = 0;
-  //otetaan muuttujaan keskeytyksen kirjoittama arvo
-  uint8_t pressedButton = dState;
+  uint8_t pressedButton = dState; //otetaan muuttujaan keskeytyksen kirjoittama arvo
 
   // jos lukema on muuttunut nollataan debounce ajastin
   if (pressedButton != lastPressedButton) {
