@@ -5,13 +5,14 @@
 #include "src/timer.h"
 #include "src/helpers.h"
 
+
 // Use these 2 volatile variables for communicating between
 // loop() function and interrupt handlers
 volatile int buttonNumber = -1;          // for buttons interrupt handler
 volatile bool newTimerInterrupt = false; // for timer interrupt handler
 byte matchedCount;                       // kuinka monta lediä pelaaja on painanut oikein putkeen
 volatile byte sequence[20];              // 20 ledin jälkeen ilman painallusta = häviö
-volatile byte litCount;                  // kuinka monta lediä on yhteensä syttynyt
+volatile int litCount;                  // kuinka monta lediä on yhteensä syttynyt
 bool gameOn = false;
 volatile uint8_t timerCounter = 0;
 volatile uint8_t timerPotency = 0; // katellaan jos tätä tarvii muualla ku timer.cpp
@@ -29,7 +30,7 @@ void setup()
 }
 
 // ---- TESTING -----
-void testCode(int sweet)
+void jurgenPlayed(int sweet)
 {
   if (gameOn)
   {
@@ -69,7 +70,7 @@ void buttonGaming(int but)
 void loop()
 {
   buttonsHandler();
-  isItTime();
+  
   if (buttonNumber > 0)
   {
     buttonGaming(buttonNumber);
@@ -108,14 +109,16 @@ void loop()
       // Aktivoidaan satunnaista numeroa vastaava ledi
       setLed(randomNumber);
 
-      // laitetaanpas sinne sequenceenkin se numero :D
+      // laitetaan arvottu luku sequenceen
       sequence[litCount % 20] = randomNumber;
 
       // nostetaan myös litcounttia
       litCount++;
+      // tarkistetaan litcount
+      isItTime();
 
       // ---- TESTING -----
-      testCode(randomNumber);
+      //jurgenPlayed(randomNumber);
       // ---- TESTING -----
     }
   }

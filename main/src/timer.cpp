@@ -1,4 +1,5 @@
 #include "timer.h"
+#include "HardwareSerial.h"
 #include "logic.h"
 #include "settings.h"
 #include "helpers.h"
@@ -176,10 +177,11 @@ void timerSpeedUp(uint8_t potency, int minValue){
   uint16_t value = percentReductionHelper(OCR1AVALUE, multiplier);
   
   // 
-  if (value > minValue) { 
+  if (value < minValue) { 
     value = minValue; 
   }
-    
+  Serial.print("tSU value: ");
+  Serial.println(value);
   OCR1A = value; // Asetetaan laskettu arvo
 }
 
