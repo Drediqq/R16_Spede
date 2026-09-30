@@ -11,7 +11,7 @@ const int outEnablePin = 8; // siirtorekisterin lähtöjen sallinta.
 
 // Numerot 0-9 binäärimuodossa (Common Cathode 7-segmenttinäyttöä käytettäessä) 
 // Jos halutaan käyttää Common Anode -näyttöä, niin binäärimuodot pitää invertoida (eli 0b00111111 -> 0b11000000 jne.)
-const byte numTable[] =
+/*const byte numTable[] =
 {
     0b00111111, // 0
     0b00000110, // 1
@@ -23,7 +23,22 @@ const byte numTable[] =
     0b00000111, // 7
     0b01111111, // 8
     0b01101111, // 9
+};*/
+
+const byte numTable[] = 
+{
+    0b11111100, // 0
+    0b01100000, // 1
+    0b11011010, // 2
+    0b11110010, // 3
+    0b01100110, // 4
+    0b10110110, // 5
+    0b10111110, // 6
+    0b11100000, // 7
+    0b11111110, // 8
+    0b11110110, // 9
 };
+
 
 void initializeDisplay(void) // alustetaan siirtorekisterin ohjauspinnit
 {
