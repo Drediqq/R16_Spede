@@ -76,6 +76,7 @@ void writeEEPROM(){
 
     EEPROM.put(0, 0xDF);
 }
+
 // päivittää scoret eepromille, käytetään kun sinne eepromille on jo kirjoitettu jotain
 void updateEEPROM(){  
     for(int i = 1; i < ARR_LEN; i++)
@@ -83,6 +84,7 @@ void updateEEPROM(){
         EEPROM.update(i, savedScores[i-1]);
     }
 }
+
 // lataa scoret eepromilta
 void readEEPROM(){
     for(int i = 1; i < ARR_LEN; i++)

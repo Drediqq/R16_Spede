@@ -18,6 +18,13 @@ void initButtonsAndButtonInterrupts(void){
 
 // kaikki nappi keskeytykset kutsuu tätä ISRää ja tallennetaan dStateen miten napit on painettu
 ISR(PCINT2_vect) {
+// PIND
+// [PIND7] [PIND6] [PIND5] [PIND4] [PIND3] [PIND2]  [PIND1]  [PIND0]    | PIND
+// ---------------------------------------------------------------------|----------------
+// [ x ]   [ x ]   [ 1 ]   [ 1 ]   [ 1 ]   [ 1 ]    [ x ]    [ x ]      | 0bxx1111xx  
+//                   |       |       |       |                          |                  
+//               (näiden pinnien tilasta välitetään)                                  
+// --------------------------------------------------------------------------------------
    dState = PIND;
 }
 
@@ -41,7 +48,7 @@ void buttonsHandler() {
   }
 }
 
-// Selvittää mitä nappia painettiin ja asettaa sitten sen arvon buttonNumber muuttujaan (meidän tapauksessa 2, 3, 4 tai 5)
+// Selvittää mitä nappia painettiin ja asettaa sitten sen arvon buttonNumber muuttujaan
 void buttonPress(uint8_t button) {
   // selvitetään mikä bitti muuttui XORilla
   uint8_t omegaButton = button ^ stableState;

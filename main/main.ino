@@ -7,6 +7,7 @@
 #include "src/score.h"
 #include "src/settings.h"
 
+byte savedScores[ARR_LEN] = {0}; // tulostaulu
 
 // Use these 2 volatile variables for communicating between
 // loop() function and interrupt handlers
@@ -15,7 +16,7 @@ volatile int buttonNumber = -1;          // for buttons interrupt handler
 volatile bool newTimerInterrupt = false; // for timer interrupt handler
 byte matchedCount;                       // kuinka monta lediä pelaaja on painanut oikein putkeen
 volatile byte sequence[20];              // 20 ledin jälkeen ilman painallusta = häviö
-volatile int litCount;                  // kuinka monta lediä on yhteensä syttynyt
+volatile int litCount;                   // kuinka monta lediä on yhteensä syttynyt
 bool gameOn = false;
 volatile uint8_t timerCounter = 0;
 volatile uint8_t timerPotency = 0; // katellaan jos tätä tarvii muualla ku timer.cpp
@@ -79,6 +80,7 @@ void buttonGaming(int but)
 
 void loop()
 {
+  
   buttonsHandler();
   
   if (buttonNumber > 0)
