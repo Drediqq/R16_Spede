@@ -21,6 +21,7 @@ void saveScore(byte newScore){
             }
         // asetetaan uusi score taulukon indeksiin
         savedScores[i] = newScore;
+        updateEEPROM();
         break;
         }
     }
@@ -63,23 +64,40 @@ bool checkScore(byte newScore){
 
 // kirjoittaa scoret eepromille
 void writeEEPROM(){
-    //EEPROM.put(...);
+    byte check = 0xDF;
+    byte valid = 0;
+    EEPROM.get(0, valid);
+
+    if(check != valid)
+    {
+        EEPROM.put(0, 0xDF);
+    }
+
+
+    EEPROM.put(0, 0xDF);
 }
 
 // päivittää scoret eepromille, käytetään kun sinne eepromille on jo kirjoitettu jotain
-void updateEEPROM(){
-    // EEPROM.update(...);
+void updateEEPROM(){  
+    for(int i = 1; i < ARR_LEN; i++)
+    {
+        EEPROM.update(i, savedScores[i-1]);
+    }
 }
 
 // lataa scoret eepromilta
 void readEEPROM(){
-    // EEPROM.get();
+    for(int i = 1; i < ARR_LEN; i++)
+    {
+        EEPROM.get(i, savedScores[i-1]);
+    }
 }
 
 // tyhjentää eepromin 
-void clearEEPROM(){
+void clearEEPROM(){ 
     // voi olla et kannattaa alottaa ykkösestä nii ei mee magicbyte hukkaan
-    // for(int i = 1; ..)
-  // EEPROM.write(i, 0);
+    for(int i = 1; i < EEPROM.length(); i++) { 
+        EEPROM.write(i, 0); 
+    }
 }
 

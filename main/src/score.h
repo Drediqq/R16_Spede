@@ -7,6 +7,8 @@
 extern byte savedScores[];
 
 
+extern byte savedScores[];
+
 void saveScore(byte newScore);
 bool checkScore(byte newScore);
 
