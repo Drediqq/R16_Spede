@@ -4,7 +4,6 @@
 #include "helpers.h"
 #include "EEPROM.h"
 
-byte savedScores[ARR_LEN] = {0}; // tulostaulu
 
 /*
 if(checkScore(...)){
@@ -66,10 +65,12 @@ bool checkScore(byte newScore){
 void writeEEPROM(){
     //EEPROM.put(...);
 }
+
 // päivittää scoret eepromille, käytetään kun sinne eepromille on jo kirjoitettu jotain
 void updateEEPROM(){
     // EEPROM.update(...);
 }
+
 // lataa scoret eepromilta
 void readEEPROM(){
     // EEPROM.get();

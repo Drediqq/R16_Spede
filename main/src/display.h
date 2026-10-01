@@ -1,8 +1,9 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 #include <Arduino.h>
+#include "score.h"
 
-
+extern byte savedScores[];
 /*
   initializeDisplay subroutine initializes 5 pins needed for controlling 7-segment
   displays in a cascade as follows:
