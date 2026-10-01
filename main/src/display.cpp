@@ -1,4 +1,6 @@
 #include "display.h"
+#include "score.h"
+#include "settings.h"
 
 // 74HC595:n ohjauspinnit
 
@@ -48,8 +50,8 @@ void initializeDisplay(void) // alustetaan siirtorekisterin ohjauspinnit
   pinMode(outEnablePin, OUTPUT); // siirtorekisterin lähtöjen sallinta ulostuloksi, jotta voidaan sallia lähtöjen käyttö
   pinMode(serialPin, OUTPUT); // siirtorekisterin sarjamuotoinen datalähtö ulostuloksi, jotta voidaan siirtää dataa rekisteriin
 
-  digitalWrite(resetPin, HIGH);  // vapautetaan siirtorekisteri nollauksesta
-  digitalWrite(outEnablePin, LOW);  // sallitaan siirtorekisterin lähtöjen käyttö
+  //digitalWrite(resetPin, HIGH);  // vapautetaan siirtorekisteri nollauksesta
+  //digitalWrite(outEnablePin, LOW);  // sallitaan siirtorekisterin lähtöjen käyttö
 }
 
 
@@ -93,3 +95,17 @@ void showResult(byte number)
   writeHighAndLowNumber(tens, ones);
 }
 
+void countDown(byte steps)
+{
+  for(int i = steps; i > 0; i--)
+  {
+    showResult(i);
+    delay(1000);
+  }
+}
+
+void scoreHandler(byte index)
+{
+  byte score = savedScores[index % 255];
+  showResult(score);
+}

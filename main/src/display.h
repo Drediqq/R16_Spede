@@ -2,6 +2,7 @@
 #define DISPLAY_H
 #include <Arduino.h>
 
+extern byte savedScores[];
 
 /*
   initializeDisplay subroutine initializes 5 pins needed for controlling 7-segment
@@ -58,5 +59,9 @@ void writeHighAndLowNumber(uint8_t tens,uint8_t ones);
   byte result: A number between 0,1,..,99. This function
 */
 void showResult(byte result);
+
+void countDown(byte steps);
+
+void scoreHandler(byte index);
 
 #endif

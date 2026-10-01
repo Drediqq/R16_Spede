@@ -4,7 +4,6 @@
 #include "helpers.h"
 #include "EEPROM.h"
 
-byte savedScores[ARR_LEN] = {0}; // tulostaulu
 
 /*
 if(checkScore(...)){
@@ -22,6 +21,7 @@ void saveScore(byte newScore){
             }
         // asetetaan uusi score taulukon indeksiin
         savedScores[i] = newScore;
+        updateEEPROM();
         break;
         }
     }
@@ -64,15 +64,31 @@ bool checkScore(byte newScore){
 
 // kirjoittaa scoret eepromille
 void writeEEPROM(){
-    EEPROM.put(0xDF, savedScores);
+    byte check = 0xDF;
+    byte valid = 0;
+    EEPROM.get(0, valid);
+
+    if(check != valid)
+    {
+        EEPROM.put(0, 0xDF);
+    }
+
+
+    EEPROM.put(0, 0xDF);
 }
 // päivittää scoret eepromille, käytetään kun sinne eepromille on jo kirjoitettu jotain
-void updateEEPROM(){
-    EEPROM.update(0xDF, savedScores);
+void updateEEPROM(){  
+    for(int i = 1; i < ARR_LEN; i++)
+    {
+        EEPROM.update(i, savedScores[i-1]);
+    }
 }
 // lataa scoret eepromilta
 void readEEPROM(){
-    EEPROM.get(0xDF, savedScores);
+    for(int i = 1; i < ARR_LEN; i++)
+    {
+        EEPROM.get(i, savedScores[i-1]);
+    }
 }
 
 // tyhjentää eepromin 

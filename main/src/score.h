@@ -2,6 +2,8 @@
 #define SCORE_H
 #include <Arduino.h>
 
+extern byte savedScores[];
+
 void saveScore(byte newScore);
 bool checkScore(byte newScore);
 
