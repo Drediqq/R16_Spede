@@ -4,9 +4,12 @@
 #include "src/logic.h"
 #include "src/timer.h"
 #include "src/helpers.h"
+#include "src/score.h"
+#include "src/settings.h"
 
 // Use these 2 volatile variables for communicating between
 // loop() function and interrupt handlers
+byte savedScores[ARR_LEN] = {0};         // tulostaulu
 volatile int buttonNumber = -1;          // for buttons interrupt handler
 volatile bool newTimerInterrupt = false; // for timer interrupt handler
 int matchedCount;                        // kuinka monta lediä pelaaja on painanut oikein putkeen
@@ -14,6 +17,7 @@ byte sequence[20];                       // 20 ledin jälkeen ilman painallusta 
 int litCount;                            // kuinka monta lediä on yhteensä syttynyt
 bool gameOn = false;
 uint8_t timerPotency = 0; // katellaan jos tätä tarvii muualla ku timer.cpp
+byte scorePointer = 0;
 
 void setup()
 {
@@ -21,10 +25,12 @@ void setup()
   Serial.begin(9600);
   Serial.println("Started");
   // -- testing --
-
+  // clearEEPROM(); // kutsu tarvittaessa, tyhjentää muistin
+  readEEPROM();
+  scoreHandler(scorePointer);
+  initializeDisplay();
   initializeLeds();
   initButtonsAndButtonInterrupts();
-  initializeDisplay();
 }
 
 // ---- TESTING -----
@@ -49,14 +55,17 @@ void buttonGaming(int but)
     switch (but)
     {
     case 1:
-      // lähtölaskenta tähän ?
+      showResult(0);
+      countDown(3);
       startTheGame();
       break;
 
     case 2:
+      scoreHandler(scorePointer++);
       break;
 
     case 3:
+      scoreHandler(scorePointer--);
       break;
 
     case 4:
@@ -67,6 +76,7 @@ void buttonGaming(int but)
 
 void loop()
 {
+
   buttonsHandler();
 
   if (buttonNumber > 0)

@@ -27,6 +27,9 @@
 #define OCR1AVALUE 15624 
 #define PRESCALER 1024
 
+// show1 ledien syttymisvauhtia muuttava aika millisekunteina
+// ledit päällä 2 * LEDBLINKTIME, ja on poissa päältä 1 * LEDBLINKTIME
+#define LEDBLINKTIME 200
 
 
 #endif
