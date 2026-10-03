@@ -7,19 +7,16 @@
 #include "src/score.h"
 #include "src/settings.h"
 
-byte savedScores[ARR_LEN] = {0}; // tulostaulu
-
 // Use these 2 volatile variables for communicating between
 // loop() function and interrupt handlers
-byte savedScores[ARR_LEN] = {0};          // tulostaulu
+byte savedScores[ARR_LEN] = {0};         // tulostaulu
 volatile int buttonNumber = -1;          // for buttons interrupt handler
 volatile bool newTimerInterrupt = false; // for timer interrupt handler
-byte matchedCount;                       // kuinka monta lediä pelaaja on painanut oikein putkeen
-volatile byte sequence[20];              // 20 ledin jälkeen ilman painallusta = häviö
-volatile int litCount;                   // kuinka monta lediä on yhteensä syttynyt
+int matchedCount;                        // kuinka monta lediä pelaaja on painanut oikein putkeen
+byte sequence[20];                       // 20 ledin jälkeen ilman painallusta = häviö
+int litCount;                            // kuinka monta lediä on yhteensä syttynyt
 bool gameOn = false;
-volatile uint8_t timerCounter = 0;
-volatile uint8_t timerPotency = 0; // katellaan jos tätä tarvii muualla ku timer.cpp
+uint8_t timerPotency = 0; // katellaan jos tätä tarvii muualla ku timer.cpp
 byte scorePointer = 0;
 
 void setup()
@@ -28,13 +25,12 @@ void setup()
   Serial.begin(9600);
   Serial.println("Started");
   // -- testing --
-  //clearEEPROM(); // kutsu tarvittaessa, tyhjentää muistin
+  // clearEEPROM(); // kutsu tarvittaessa, tyhjentää muistin
   readEEPROM();
   scoreHandler(scorePointer);
   initializeDisplay();
   initializeLeds();
   initButtonsAndButtonInterrupts();
-  
 }
 
 // ---- TESTING -----
@@ -65,11 +61,11 @@ void buttonGaming(int but)
       break;
 
     case 2:
-    scoreHandler(scorePointer++);
+      scoreHandler(scorePointer++);
       break;
 
     case 3:
-    scoreHandler(scorePointer--);
+      scoreHandler(scorePointer--);
       break;
 
     case 4:
@@ -80,9 +76,9 @@ void buttonGaming(int but)
 
 void loop()
 {
-  
+
   buttonsHandler();
-  
+
   if (buttonNumber > 0)
   {
     buttonGaming(buttonNumber);
@@ -130,7 +126,7 @@ void loop()
       isItTime();
 
       // ---- TESTING -----
-      //jurgenPlayed(randomNumber);
+      // jurgenPlayed(randomNumber);
       // ---- TESTING -----
     }
   }
