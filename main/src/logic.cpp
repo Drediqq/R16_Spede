@@ -3,16 +3,10 @@
 #include "display.h"
 #include "timer.h"
 #include "leds.h"
+#include "score.h"
 
 void checkGame(byte nbrOfButtonPush) // tarkistaa mitä on painettu seuraavaa lediä vastaan. Oikein +1, väärin peli loppuu.
 {
-  // -- tätä ei pitäis tarvita
-  if (!gameOn) // painallukset ei tee mitään kun peli eioo käynnissä
-  {
-    return;
-  }
-  // --
-
   byte expected = sequence[matchedCount % 20]; // sequence on 20 paikan ring buffer
 
   if (nbrOfButtonPush == expected && matchedCount < litCount) // painallus ennen ekaa lediä/kun niitä ei ole ja tuplapainallus = väärin
@@ -57,6 +51,14 @@ void startTheGame()
 void endGame()
 {
   stopTimer();
+  newTimerInterrupt = false;
+
+  if (checkScore(matchedCount))
+  {
+    saveScore(matchedCount);
+    writeEEPROM();
+  }
+
   showResult(matchedCount);
   clearAllLeds();
   gameOn = false;
