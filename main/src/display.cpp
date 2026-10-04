@@ -1,4 +1,5 @@
 #include "display.h"
+#include "HardwareSerial.h"
 #include "score.h"
 #include "settings.h"
 
@@ -7,7 +8,7 @@
 const int shiftClockPin = 13; // siirtorekisterin kellopinni.
 const int latchClockPin = 12; // siirtorekisterin lukituspinni. lukitaan LOW->HIGH siirtymä, jolloin siirtorekisterin sisältö kopioidaan lähtöihin.
 const int serialPin = 11; // siirtää dataa sarjamuodossa rekisteriin.
-const int resetPin = 9; // siirtorekisterin reset-pinni. 
+const int resetPin = 10; // siirtorekisterin reset-pinni. 
 const int outEnablePin = 8; // siirtorekisterin lähtöjen sallinta. 
 
 
@@ -106,6 +107,10 @@ void countDown(byte steps)
 
 void scoreHandler(byte index)
 {
-  byte score = savedScores[index % 255];
+  byte score = savedScores[index % ARR_LEN];
+  Serial.print("Score in index: ");
+  Serial.print(index % ARR_LEN);
+  Serial.print(" Score : ");
+  Serial.println(score);
   showResult(score);
 }

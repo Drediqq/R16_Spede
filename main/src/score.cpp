@@ -83,6 +83,7 @@ void updateEEPROM(){
     {
         EEPROM.update(i, savedScores[i-1]);
     }
+    Serial.println("Score saved successfully to eeprom");
 }
 
 // lataa scoret eepromilta

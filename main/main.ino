@@ -7,9 +7,8 @@
 #include "src/score.h"
 #include "src/settings.h"
 
-// Use these 2 volatile variables for communicating between
-// loop() function and interrupt handlers
-byte savedScores[ARR_LEN] = {0};         // tulostaulu
+byte savedScores[ARR_LEN] = {0}; // tulostaulu
+
 volatile int buttonNumber = -1;          // for buttons interrupt handler
 volatile bool newTimerInterrupt = false; // for timer interrupt handler
 int matchedCount;                        // kuinka monta lediä pelaaja on painanut oikein putkeen
@@ -27,8 +26,8 @@ void setup()
   // -- testing --
   // clearEEPROM(); // kutsu tarvittaessa, tyhjentää muistin
   readEEPROM();
-  scoreHandler(scorePointer);
   initializeDisplay();
+  scoreHandler(scorePointer);
   initializeLeds();
   initButtonsAndButtonInterrupts();
 }
