@@ -2,11 +2,7 @@
 
 
 
-// 74HC595:n ohjauspinnit
 
-const int shiftClockPin = 13; // siirtorekisterin kellopinni.
-const int latchClockPin = 12; // siirtorekisterin lukituspinni. lukitaan LOW->HIGH siirtymä, jolloin siirtorekisterin sisältö kopioidaan lähtöihin.
-const int serialPin = 11; // siirtää dataa sarjamuodossa rekisteriin.
 
 
 
@@ -29,13 +25,9 @@ const byte numTable[] =
 
 void initializeDisplay(void) // alustetaan siirtorekisterin ohjauspinnit
 {
-  
   pinMode(shiftClockPin, OUTPUT); // siirtorekisterin kellopinni ulostuloksi, jotta voidaan siirtää dataa rekisteriin
   pinMode(latchClockPin, OUTPUT); // siirtorekisterin lukituspinni ulostuloksi, jotta voidaan kopioida rekisterin sisältö lähtöihin
   pinMode(serialPin, OUTPUT); // siirtorekisterin sarjamuotoinen datalähtö ulostuloksi, jotta voidaan siirtää dataa rekisteriin
-
-  //digitalWrite(resetPin, HIGH);  // vapautetaan siirtorekisteri nollauksesta
-  //digitalWrite(outEnablePin, LOW);  // sallitaan siirtorekisterin lähtöjen käyttö
 }
 
 
@@ -79,6 +71,7 @@ void showResult(byte number)
   writeHighAndLowNumber(tens, ones);
 }
 
+// lähtölaskenta
 void countDown(byte steps)
 {
   for(int i = steps; i > 0; i--)
@@ -88,6 +81,7 @@ void countDown(byte steps)
   }
 }
 
+// näyttää scoren pyydetystä indeksistä
 void scoreHandler(byte index)
 {
   byte score = savedScores[index % ARR_LEN];

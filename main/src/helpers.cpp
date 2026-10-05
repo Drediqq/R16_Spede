@@ -14,8 +14,7 @@ void interruptHelper(uint8_t pin){
   }
 }
 
-
-// millistimer, palauttaa true/false
+// vertaa millis() annettuun aikaan, palauttaa true/false
 bool millisHelper(uint32_t time, uint16_t compareValue){
   return (millis() - time) >= compareValue; //palauttaa true/false
 }
@@ -26,7 +25,7 @@ float multiplierHelper(int percent, int potency){
   return pow(base, potency);       // base^step,              esim. 1.1² (²=step)
 }
 
-// palauttaa value / divider ---- esim. 15624 / 1.1 = 14203
+// palauttaa value / divider esim. 15624 / 1.1 = 14203
 int percentReductionHelper(uint16_t value, float divider) {
   return value / divider;
 }

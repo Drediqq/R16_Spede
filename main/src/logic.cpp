@@ -28,17 +28,15 @@ void initializeGame() // nollaa pelin counterit ja flagit uutta peliä varten
   showResult(0);
 }
 
-void startTheGame()
-{
-  // valoshow pitää jotenki lopettaa joko täs tai sitte sielä ite valoshowssa
-  // gameOn = true; // jos halutaan se näin ratkasta esimerkiks
+void startTheGame() // aloittaa pelin
+{ 
   gameOn = true;
   initializeGame();
   initializeTimer();
   newTimerInterrupt = true;
 }
 
-void endGame()
+void endGame() // lopettaa pelin
 {
   stopTimer();
   newTimerInterrupt = false;

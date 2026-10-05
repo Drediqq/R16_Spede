@@ -1,91 +1,76 @@
 #include "src/buttons.h"
+#include "src/control.h"
 #include "src/display.h"
+#include "src/helpers.h"
 #include "src/leds.h"
 #include "src/logic.h"
-#include "src/timer.h"
-#include "src/helpers.h"
 #include "src/score.h"
 #include "src/settings.h"
-#include "src/control.h"
+#include "src/timer.h"
 
 byte savedScores[ARR_LEN] = {0}; // tulostaulu
 
 volatile int buttonNumber = -1;          // for buttons interrupt handler
 volatile bool newTimerInterrupt = false; // for timer interrupt handler
-int matchedCount;                        // kuinka monta lediä pelaaja on painanut oikein putkeen
-byte sequence[20];                       // 20 ledin jälkeen ilman painallusta = häviö
-int litCount;                            // kuinka monta lediä on yhteensä syttynyt
+int matchedCount;  // kuinka monta lediä pelaaja on painanut oikein putkeen
+byte sequence[20]; // 20 ledin jälkeen ilman painallusta = häviö
+int litCount;      // kuinka monta lediä on yhteensä syttynyt
 bool gameOn = false;
 uint8_t timerPotency = 0; // katellaan jos tätä tarvii muualla ku timer.cpp
 
-
-
-
-void setup()
-{
+void setup() {
   noInterrupts();
 
-  // -- testing --
-  Serial.begin(9600);
-  Serial.println("Started");
-  // -- testing --
-
   // clearEEPROM(); // kutsu tarvittaessa, tyhjentää muistin
-  
+
+  // display/leds/buttons init
   initializeDisplay();
   initializeLeds();
   initButtonsAndButtonInterrupts();
   
+  // EEPROM init
+  writeEEPROM();
+  delay(10);
   readEEPROM();
-  
+
+  //Standby
   standby();
 
   interrupts();
 }
 
+void loop() {
+  buttonsHandler(); // asettaa painetun napin arvon buttonNumber muuttujaan
 
-
-
-void loop(){
-    
-  buttonsHandler();
-  if(!gameOn){
-    if(!setDiff){
+  // jos peli eikä vaikeustasovalitsin ole päällä, pyöritellään valoshowta
+  if (!gameOn) {
+    if (!setDiff) {
       show1();
     }
   }
-  if (buttonNumber > 0){
-    if(gameOn){
+
+  // nappien ohjaus
+  if (buttonNumber > 0) {
+    if (gameOn) {
       checkGame(buttonNumber);
-    }else{
-      
-      Serial.println(buttonNumber);
+    } else {
       buttonControl(buttonNumber);
     }
     buttonNumber = -1;
   }
-
-  // tän vois varmaa siirtää logic
-  if (newTimerInterrupt == true)
-  {
-    byte pending = litCount - matchedCount; // monta painamatonta lediä on jonossa
+  
+  // ledien ohjaus pelatessa
+  if (newTimerInterrupt == true) {
+    byte pending = litCount - matchedCount; // montako painamatonta lediä on jonossa
 
     if (pending >= 20) // 20 painamatonta lediä = häviö
     {
-      endGame();
-    }
-    else
-    { 
-      // Sammutetaan muut ledit
-      clearAllLeds();
-      logicControl();
-      Serial.print("litcount: ");
-      Serial.println(litCount);
-      // tarkistetaan litcount
-      isItTime(litCount);
+      endGame(); // peli päättyy
+    } else {
+      clearAllLeds(); // Sammutetaan ledit
+      logicControl(); // sytyttää ledin
+      isItTime(litCount); // tarkistetaan onko sytytetty tarpeeksi
       newTimerInterrupt = false;
-
-    
     }
   }
 }
