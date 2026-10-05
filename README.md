@@ -4,6 +4,9 @@ Arduinolla toteutettu muisti- ja reaktiopeli, joka perustuu Speden Spelit -ohjel
 <!-- GIF tai kuva pelistä -->
 
 ## Vuokaavio
+
+[Avaa vuokaavio täysikokoisena](images/Spedevuokaavio.svg?raw=true)
+
 ![Vuokaavio](images/Spedevuokaavio.svg)
 
 ## Tarvittavat komponentit
@@ -41,6 +44,10 @@ Arduinolla toteutettu muisti- ja reaktiopeli, joka perustuu Speden Spelit -ohjel
 ## Kytkentä
 <!-- Kuva kytkennästä -->
 
+### Piirikaavio
+
+![Piirikaavio](images/piirikaavio.png)
+
 ## Wokwi simulaatio
 <!-- linkki simuun -->
 
@@ -52,29 +59,25 @@ Arduinolla toteutettu muisti- ja reaktiopeli, joka perustuu Speden Spelit -ohjel
       <a href="https://github.com/Drediqq">
         <img src="https://github.com/Drediqq.png" width="100" alt="Juuso Kiiala"/><br />
         <sub><b>Juuso Kiiala</b></sub>
-      </a><br />
-      <sub>Vastuualue</sub>
+      </a>
     </td>
     <td align="center" width="25%">
       <a href="https://github.com/xDeeZy666">
         <img src="https://github.com/xDeeZy666.png" width="100" alt="Eetu Stranden"/><br />
         <sub><b>Eetu Stranden</b></sub>
-      </a><br />
-      <sub>Vastuualue</sub>
+      </a>
     </td>
     <td align="center" width="25%">
       <a href="https://github.com/Moolokki">
         <img src="https://github.com/Moolokki.png" width="100" alt="Patrick Hietala"/><br />
         <sub><b>Patrick Hietala</b></sub>
-      </a><br />
-      <sub>Vastuualue</sub>
+      </a>
     </td>
     <td align="center" width="25%">
       <a href="https://github.com/xdanu">
         <img src="https://github.com/xdanu.png" width="100" alt="Daniel Kallio"/><br />
         <sub><b>Daniel Kallio</b></sub>
-      </a><br />
-      <sub>Vastuualue</sub>
+      </a>
     </td>
   </tr>
 </table>
