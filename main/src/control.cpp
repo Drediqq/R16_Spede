@@ -1,25 +1,19 @@
 #include "control.h"
 
-#include "leds.h"
-#include "display.h"
-#include "logic.h"
+byte difficulty = 1; // vaikeustaso
+bool setDiff = false; //vaikeustaso asetin päällä/pois
+byte scorePointer = 0; // highscore osoitin
 
-extern byte sequence[];
-extern int litCount;
-
-byte difficulty = 1;
-bool setDiff = false;
-byte scorePointer = 0;
-
+// palauttaa alkutilan
 void standby(){
   setDiff = false;
   difficulty = 1;
   clearAllLeds();
   scorePointer = 0;
   scoreHandler(scorePointer);
-
 }
 
+// arpoo numerot ja sytyttelee ledit
 void logicControl(){
       static byte oldNumber = 0;    // tähän tallennetaan edellinen arvottu luku
       static byte randomNumber = 0; // arvottava luku
@@ -41,16 +35,21 @@ void logicControl(){
       litCount++;
 }
 
+// nappiohjaus
 void buttonControl(int but){
-    switch (but)
+  // näppäimet 1,2,3,4 vasemmalta oikealle.  
+  switch (but)
     {
+    //pelin aloitusnäppäin 
     case 1:
-      if(!setDiff){
+      if(!setDiff){ 
         clearAllLeds();
         setDiff = !setDiff;
         showResult(difficulty);
         setLed(difficulty);
-      }else{
+      
+      // peli käynnistyy toisella painalluksella.
+      }else{ 
         setDiff = !setDiff;
         clearAllLeds();
         showResult(0);
@@ -58,40 +57,41 @@ void buttonControl(int but){
         startTheGame();
       }
       break;
-
+    // scoren selausnäppäin 2
     case 2:
-    if(!setDiff){
-      scorePointer++;
-      if(scorePointer >= 255){
-        scorePointer = 0;
-      }
-      scoreHandler(scorePointer);
+      if(!setDiff){
+        if(!setDiff){
+          scorePointer--;
+          if(scorePointer >= 255){
+            scorePointer = 254;
+          }
+          scoreHandler(scorePointer);
+        }
     }
       break;
-
+    // scoren selausnäppäin 3
     case 3:
       if(!setDiff){
-      scorePointer--;
-      if(scorePointer >= 255){
-        scorePointer = 254;
+        if(!setDiff){
+          scorePointer++;
+          if(scorePointer >= 255){ // skipataan 255
+            scorePointer = 0;
+          }
+          scoreHandler(scorePointer);
+        }
       }
-      scoreHandler(scorePointer);
-    }
       break;
-
+    // vaikeustaso asetin 4
     case 4:
       if(setDiff){
-        difficulty++;
-        
-        
+        difficulty++; // nostetaan vaikeustasoa joka painalluksella
         if(difficulty > 4){
-          difficulty = 1;
+          difficulty = 1; // palataan takaisin vaikeustaso 1 kun mennään yli 4
           clearAllLeds();
         }
         setLed(difficulty);
         showResult(difficulty);
       }
-      
       break;
     }
 }

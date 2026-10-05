@@ -1,12 +1,5 @@
 #include "score.h"
 
-
-/*
-if(checkScore(...)){
-    saveScore(...);    
-} 
-*/
-
 // tallentaa tulokset taulukkoon
 void saveScore(byte newScore){
     for (int i = 0; i < ARR_LEN; i++) {
@@ -48,19 +41,9 @@ bool checkScore(byte newScore){
 }
 
 
-
-// Note: An EEPROM write takes 3.3 ms to complete. 
-// The EEPROM memory has a specified life of 100,000 write/erase cycles, 
-// so you may need to be careful about how often you write to it.
-
-// osoite 0 kannattaa vissiin laittaa joku random luku eli ns. magicbyte, vaikka 0xDF = 223
-// esim vaikka osoite 1 = 8 bittiä eli saa asetettua arvon 0-255
-// jos päätetään käyttää 16bittisiä niin sitten oletan että se vie sit osoitteet 1 ja 2
-// ja arvo on 0-65535
-
-// kirjoittaa scoret eepromille
+// kirjoittaa taikabyten eepromin osoitteeseen 0
 void writeEEPROM(){
-    byte check = 0xDF;
+    byte check = 0xDF; // taikabyte = 223
     byte valid = 0;
     EEPROM.get(0, valid);
 
@@ -68,16 +51,13 @@ void writeEEPROM(){
     {
         EEPROM.put(0, 0xDF);
     }
-
-
-    EEPROM.put(0, 0xDF);
 }
 
 // päivittää scoret eepromille, käytetään kun sinne eepromille on jo kirjoitettu jotain
 void updateEEPROM(){  
     for(int i = 1; i <= ARR_LEN; i++)
     {
-        EEPROM.update(i, savedScores[i-1]);
+        EEPROM.update(i, savedScores[i-1]); // kirjoittaa vain jos on muutoksia
     }
     
 }
@@ -86,13 +66,13 @@ void updateEEPROM(){
 void readEEPROM(){
     for(int i = 1; i <= ARR_LEN; i++)
     {
-        EEPROM.get(i, savedScores[i-1]);
+        EEPROM.get(i, savedScores[i-1]); // lukee highscoret
     }
 }
 
 // tyhjentää eepromin 
 void clearEEPROM(){ 
-    // voi olla et kannattaa alottaa ykkösestä nii ei mee magicbyte hukkaan
+    //aloitetaan osoitteesta 1 niin taikabyte ei mene hukkaan
     for(int i = 1; i < EEPROM.length(); i++) { 
         EEPROM.write(i, 0); 
     }

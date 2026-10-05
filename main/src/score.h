@@ -5,12 +5,8 @@
 #include "helpers.h"
 #include "EEPROM.h"
 
-
-
 extern byte savedScores[];
 
-
-extern byte savedScores[];
 
 void saveScore(byte newScore);
 bool checkScore(byte newScore);
