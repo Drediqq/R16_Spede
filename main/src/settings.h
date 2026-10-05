@@ -14,7 +14,7 @@
 #define STARTSPEED 1 // turha right now, vois mahdollisesti laskea koko ocr1a arvon
 
 #define SPEEDUPVALUE 10 // n% kiihtyvyys
-#define SPEEDUPINTERVAL 10 // montako lediä sytytetään kunnes nostetaan vauhtia
+#define SPEEDUPINTERVAL 5 // montako lediä sytytetään kunnes nostetaan vauhtia
 #define MAXSPEED 150 // pienempi = nopeampi
 
 // Napit

@@ -170,7 +170,7 @@ timerPotency = 0; // asettaa nopeuskertoimen 0
 // nopeuttaa ajastinta
 // ottaa vastaan potenssin ja minimiarvon
 void timerSpeedUp(uint8_t potency, int minValue){
-  float multiplier = multiplierHelper(SPEEDUPVALUE, potency);
+  float multiplier = multiplierHelper(SPEEDUPVALUE*difficulty, potency);
   uint16_t value = percentReductionHelper(OCR1AVALUE, multiplier);
   
   // 
@@ -188,9 +188,9 @@ void timerSpeedUp(uint8_t potency, int minValue){
 #####################
 */
 // nostaa nopeutta jos litcount % SPEEDUPINTERVAL == 0
-void isItTime(){
-  if(litCount != 0){
-    if((litCount % SPEEDUPINTERVAL) == 0){
+void isItTime(int value){
+  if(value != 0){
+    if((value % SPEEDUPINTERVAL) == 0){
       timerPotency++;
       timerSpeedUp(timerPotency, MAXSPEED);
       resetTimer(); // Nollaa ajastin ettei tapahdu kummallisuuksia

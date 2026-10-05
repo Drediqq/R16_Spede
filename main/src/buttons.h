@@ -5,7 +5,7 @@
 #include <avr/interrupt.h>
 #include "helpers.h"
 #include "settings.h"
-#include "logic.h"
+
 
 extern volatile int buttonNumber; // buttons.cpp:lle että tämä variable on olemassa jossain, tässä tapauksessa .inossa
 const byte firstPin = 2; // First PinChangeInterrupt on D-bus

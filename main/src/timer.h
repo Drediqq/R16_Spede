@@ -9,6 +9,7 @@
 
 extern volatile bool newTimerInterrupt;
 extern uint8_t timerPotency;
+extern byte difficulty;
 
 void initializeTimer(void);           // alustaa ja käynnistää timerin
 void prescalerHelper(uint16_t scale); // asettaa prescalerin pyydettyyn arvoon
@@ -16,6 +17,6 @@ void timerControl(bool state);
 void resetTimer(void);   // asettaa ajastimen 0
 void stopTimer(void);    // pysäyttää ajastimen kokonaan asettamalla prescalerin 000
 void timerSpeedUp(void); // nopeuttaa ajastinta
-void isItTime();         // tarkistetaan pitääkö vauhtia nostaa  ---- vois ehkä kutsua mainloopissa? ----
+void isItTime(int);         // tarkistetaan pitääkö vauhtia nostaa  ---- vois ehkä kutsua mainloopissa? ----
 ISR(TIMER1_COMPA_vect);
 #endif
