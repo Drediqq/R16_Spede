@@ -51,8 +51,8 @@ Arduinolla toteutettu muisti- ja reaktiopeli, joka perustuu Speden Spelit -ohjel
     </td>
     <td align="center" width="25%">
       <a href="https://github.com/Moolokki">
-        <img src="https://github.com/Moolokki.png" width="100" alt="Patrick Kallio"/><br />
-        <sub><b>Patrick Kallio</b></sub>
+        <img src="https://github.com/Moolokki.png" width="100" alt="Patrick Hietala"/><br />
+        <sub><b>Patrick Hietala</b></sub>
       </a><br />
       <sub>Vastuualue</sub>
     </td>
