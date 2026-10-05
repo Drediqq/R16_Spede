@@ -17,6 +17,8 @@ int litCount;                            // kuinka monta lediä on yhteensä syt
 bool gameOn = false;
 uint8_t timerPotency = 0; // katellaan jos tätä tarvii muualla ku timer.cpp
 byte scorePointer = 0;
+byte difficulty = 1;
+bool setDiff = false;
 
 void setup()
 {
@@ -66,18 +68,26 @@ void loop()
 
   if (buttonNumber > 0)
   {
-      if (gameOn)
-  {
-    checkGame(buttonNumber);
-  }
+    if(gameOn)
+    {
+      checkGame(buttonNumber);
+    }
   else
   {
     switch (buttonNumber)
     {
     case 1:
-      showResult(0);
-      countDown(3);
-      startTheGame();
+      if(!setDiff){
+        setDiff = !setDiff;
+        showResult(difficulty);
+        setLed(difficulty);
+      }else{
+        setDiff = !setDiff;
+        clearAllLeds();
+        showResult(0);
+        countDown(3);
+        startTheGame();
+      }
       break;
 
     case 2:
@@ -97,6 +107,18 @@ void loop()
       break;
 
     case 4:
+      if(setDiff){
+        difficulty++;
+        
+        
+        if(difficulty > 4){
+          difficulty = 1;
+          clearAllLeds();
+        }
+        setLed(difficulty);
+        showResult(difficulty);
+      }
+      
       break;
     }
   }
@@ -120,7 +142,7 @@ void loop()
       Serial.print("litcount: ");
       Serial.println(litCount);
       // tarkistetaan litcount
-      isItTime();
+      isItTime(litCount);
       newTimerInterrupt = false;
 
       
