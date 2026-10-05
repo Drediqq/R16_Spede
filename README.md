@@ -5,7 +5,7 @@ Arduinolla toteutettu muisti- ja reaktiopeli, joka perustuu Speden Spelit -ohjel
 
 ## Vuokaavio
 
-[Avaa vuokaavio täysikokoisena](images/Spedevuokaavio.svg?raw=true)
+[Avaa vuokaavio täysikokoisena](https://raw.githubusercontent.com/Drediqq/R16_Spede/images/Spedevuokaavio.svg)
 
 ![Vuokaavio](images/Spedevuokaavio.svg)
 
