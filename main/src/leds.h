@@ -3,6 +3,9 @@
 #include <Arduino.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include "helpers.h"
+#include "settings.h"
+
 
 const byte firstLedPin = 16;
 const byte lastLedPin = 19;

@@ -2,6 +2,9 @@
 #define SCORE_H
 #include <Arduino.h>
 #include "settings.h"
+#include "helpers.h"
+#include "EEPROM.h"
+
 
 
 extern byte savedScores[];

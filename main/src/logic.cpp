@@ -1,9 +1,5 @@
 #include "logic.h"
-#include "Arduino.h"
-#include "display.h"
-#include "timer.h"
-#include "leds.h"
-#include "score.h"
+
 
 void checkGame(byte nbrOfButtonPush) // tarkistaa mitä on painettu seuraavaa lediä vastaan. Oikein +1, väärin peli loppuu.
 {
@@ -46,6 +42,7 @@ void startTheGame()
   gameOn = true;
   initializeGame();
   initializeTimer();
+  newTimerInterrupt = true;
 }
 
 void endGame()
@@ -56,10 +53,35 @@ void endGame()
   if (checkScore(matchedCount))
   {
     saveScore(matchedCount);
-    writeEEPROM();
+    updateEEPROM();
   }
 
   showResult(matchedCount);
   clearAllLeds();
   gameOn = false;
+}
+void logicControl(){
+      static byte oldNumber = 0;    // tähän tallennetaan edellinen arvottu luku
+      static byte randomNumber = 0; // arvottava luku
+
+      // Generoidaan satunnainen numero
+      while (randomNumber == oldNumber)
+      {
+        randomNumber = random(1, 5); // pitäsköhän arpoa jossain pelin alotuksessa paljo numeroita
+      }
+      oldNumber = randomNumber;
+
+      // ---- TEST -----
+      Serial.print("led number: ");
+      Serial.println(randomNumber);
+      // ---- TEST -----
+
+      // Aktivoidaan satunnaista numeroa vastaava ledi
+      setLed(randomNumber);
+
+      // laitetaan arvottu luku sequenceen
+      sequence[litCount % 20] = randomNumber;
+
+      // nostetaan myös litcounttia
+      litCount++;
 }

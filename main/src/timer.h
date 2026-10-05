@@ -3,6 +3,9 @@
 #include <Arduino.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include "logic.h"
+#include "settings.h"
+#include "helpers.h"
 
 extern volatile bool newTimerInterrupt;
 extern uint8_t timerPotency;

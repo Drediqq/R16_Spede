@@ -1,7 +1,4 @@
 #include "leds.h"
-#include "Arduino.h"
-#include "helpers.h"
-#include "settings.h"
 
 void initializeLeds()
 {
