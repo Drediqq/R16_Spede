@@ -4,17 +4,30 @@ Arduinolla toteutettu muisti- ja reaktiopeli, joka perustuu Speden Spelit -ohjel
 <!-- GIF tai kuva pelistä -->
 
 ## Vuokaavio
-<!-- Kuva vuokaaviosta -->
+![Vuokaavio](images/Spedevuokaavio.svg)
 
 ## Tarvittavat komponentit
-- Arduino Uno
-- 2x 7-segmenttinäyttöä
-- 4x lediä
-- 4x painonappia
-- 2x 74HC595 siirtorekisteriä
-- 2x koekytkentäalustaa tai piirilevyn
-- vastuksia (~500ohm)
-- hyppylankoja
+
+| Osat | Määrä |
+|---|---|
+| Arduino Uno R3 | 1 |
+| LED | 4 |
+| 220 Ω vastus | 18 |
+| 7-segmenttinäyttö | 2 |
+| Painonappi | 4 |
+| 74HC595-siirtorekisteri | 2 |
+
+### Kotelointi (valinnainen)
+
+| Osat | Määrä |
+|---|---|
+| Kaksipuolinen piirilevy | 1 |
+| Piikkirima | > 1 |
+| Holkkirima | > 1 |
+| JST-XH-liitin | > 1 |
+| Dupont-liitin | > 1 |
+| M3-inserttimutteri | 12 |
+| M3×8-ruuvi | 12 |
 
 ## Pelin toiminta
 - Peli käynnistyy nappia 1 painamalla.
