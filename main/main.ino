@@ -6,6 +6,7 @@
 #include "src/helpers.h"
 #include "src/score.h"
 #include "src/settings.h"
+#include "src/control.h"
 
 byte savedScores[ARR_LEN] = {0}; // tulostaulu
 
@@ -16,9 +17,9 @@ byte sequence[20];                       // 20 ledin jälkeen ilman painallusta 
 int litCount;                            // kuinka monta lediä on yhteensä syttynyt
 bool gameOn = false;
 uint8_t timerPotency = 0; // katellaan jos tätä tarvii muualla ku timer.cpp
-byte scorePointer = 0;
-byte difficulty = 1;
-bool setDiff = false;
+
+
+
 
 void setup()
 {
@@ -36,92 +37,31 @@ void setup()
   initButtonsAndButtonInterrupts();
   
   readEEPROM();
-  scoreHandler(scorePointer);
- 
-  Serial.println(savedScores[0]);
+  
+  standby();
 
   interrupts();
 }
 
 
-// ---- TESTING -----
-void jurgenPlayed(int sweet)
-{
-  if (gameOn)
-  {
-    buttonNumber = sweet;
-  }
-}
-// ---- TESTING ----
-
-// painallukset, Danielin
-void buttonReader(int but)
-{
-
-}
 
 
-void loop()
-{
-
+void loop(){
+    
   buttonsHandler();
-
-  if (buttonNumber > 0)
-  {
-    if(gameOn)
-    {
-      checkGame(buttonNumber);
-    }
-  else
-  {
-    switch (buttonNumber)
-    {
-    case 1:
-      if(!setDiff){
-        setDiff = !setDiff;
-        showResult(difficulty);
-        setLed(difficulty);
-      }else{
-        setDiff = !setDiff;
-        clearAllLeds();
-        showResult(0);
-        countDown(3);
-        startTheGame();
-      }
-      break;
-
-    case 2:
-      scorePointer++;
-      if(scorePointer >= 255){
-        scorePointer = 0;
-      }
-      scoreHandler(scorePointer);
-      break;
-
-    case 3:
-      scorePointer--;
-      if(scorePointer >= 255){
-        scorePointer = 254;
-      }
-      scoreHandler(scorePointer);
-      break;
-
-    case 4:
-      if(setDiff){
-        difficulty++;
-        
-        
-        if(difficulty > 4){
-          difficulty = 1;
-          clearAllLeds();
-        }
-        setLed(difficulty);
-        showResult(difficulty);
-      }
-      
-      break;
+  if(!gameOn){
+    if(!setDiff){
+      show1();
     }
   }
+  if (buttonNumber > 0){
+    if(gameOn){
+      checkGame(buttonNumber);
+    }else{
+      
+      Serial.println(buttonNumber);
+      buttonControl(buttonNumber);
+    }
     buttonNumber = -1;
   }
 
@@ -145,11 +85,7 @@ void loop()
       isItTime(litCount);
       newTimerInterrupt = false;
 
-      
-
-      // ---- TESTING -----
-      // jurgenPlayed(randomNumber);
-      // ---- TESTING -----
+    
     }
   }
 }

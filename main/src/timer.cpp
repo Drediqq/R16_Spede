@@ -177,8 +177,7 @@ void timerSpeedUp(uint8_t potency, int minValue){
   if (value < minValue) { 
     value = minValue; 
   }
-  Serial.print("tSU value: ");
-  Serial.println(value);
+
   OCR1A = value; // Asetetaan laskettu arvo
 }
 
