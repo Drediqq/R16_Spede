@@ -10,6 +10,7 @@
 const byte firstLedPin = 16;
 const byte lastLedPin = 19;
 extern bool gameOn;
+extern bool setDiff;
 
 
 /*

@@ -75,16 +75,16 @@ void writeEEPROM(){
 
 // päivittää scoret eepromille, käytetään kun sinne eepromille on jo kirjoitettu jotain
 void updateEEPROM(){  
-    for(int i = 1; i < ARR_LEN; i++)
+    for(int i = 1; i <= ARR_LEN; i++)
     {
         EEPROM.update(i, savedScores[i-1]);
     }
-    Serial.println("Score saved successfully to eeprom");
+    
 }
 
 // lataa scoret eepromilta
 void readEEPROM(){
-    for(int i = 1; i < ARR_LEN; i++)
+    for(int i = 1; i <= ARR_LEN; i++)
     {
         EEPROM.get(i, savedScores[i-1]);
     }
