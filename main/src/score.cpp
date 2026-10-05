@@ -1,8 +1,4 @@
-#include "Arduino.h"
-#include "settings.h"
 #include "score.h"
-#include "helpers.h"
-#include "EEPROM.h"
 
 
 /*

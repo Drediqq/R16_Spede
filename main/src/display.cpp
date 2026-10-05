@@ -1,32 +1,17 @@
 #include "display.h"
-#include "HardwareSerial.h"
-#include "score.h"
-#include "settings.h"
+
+
 
 // 74HC595:n ohjauspinnit
 
 const int shiftClockPin = 13; // siirtorekisterin kellopinni.
 const int latchClockPin = 12; // siirtorekisterin lukituspinni. lukitaan LOW->HIGH siirtymä, jolloin siirtorekisterin sisältö kopioidaan lähtöihin.
 const int serialPin = 11; // siirtää dataa sarjamuodossa rekisteriin.
-const int resetPin = 10; // siirtorekisterin reset-pinni. 
-const int outEnablePin = 8; // siirtorekisterin lähtöjen sallinta. 
+
 
 
 // Numerot 0-9 binäärimuodossa (Common Cathode 7-segmenttinäyttöä käytettäessä) 
 // Jos halutaan käyttää Common Anode -näyttöä, niin binäärimuodot pitää invertoida (eli 0b00111111 -> 0b11000000 jne.)
-/*const byte numTable[] =
-{
-    0b00111111, // 0
-    0b00000110, // 1
-    0b01011011, // 2
-    0b01001111, // 3
-    0b01100110, // 4
-    0b01101101, // 5
-    0b01111101, // 6
-    0b00000111, // 7
-    0b01111111, // 8
-    0b01101111, // 9
-};*/
 const byte numTable[] =
 {
     0b10111110, // 0
@@ -45,10 +30,8 @@ const byte numTable[] =
 void initializeDisplay(void) // alustetaan siirtorekisterin ohjauspinnit
 {
   
-  pinMode(resetPin, OUTPUT); // reset-pinni ulostuloksi, jotta voidaan nollata siirtorekisteri
   pinMode(shiftClockPin, OUTPUT); // siirtorekisterin kellopinni ulostuloksi, jotta voidaan siirtää dataa rekisteriin
   pinMode(latchClockPin, OUTPUT); // siirtorekisterin lukituspinni ulostuloksi, jotta voidaan kopioida rekisterin sisältö lähtöihin
-  pinMode(outEnablePin, OUTPUT); // siirtorekisterin lähtöjen sallinta ulostuloksi, jotta voidaan sallia lähtöjen käyttö
   pinMode(serialPin, OUTPUT); // siirtorekisterin sarjamuotoinen datalähtö ulostuloksi, jotta voidaan siirtää dataa rekisteriin
 
   //digitalWrite(resetPin, HIGH);  // vapautetaan siirtorekisteri nollauksesta
@@ -108,9 +91,5 @@ void countDown(byte steps)
 void scoreHandler(byte index)
 {
   byte score = savedScores[index % ARR_LEN];
-  Serial.print("Score in index: ");
-  Serial.print(index % ARR_LEN);
-  Serial.print(" Score : ");
-  Serial.println(score);
   showResult(score);
 }

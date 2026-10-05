@@ -20,17 +20,27 @@ byte scorePointer = 0;
 
 void setup()
 {
+  noInterrupts();
+
   // -- testing --
   Serial.begin(9600);
   Serial.println("Started");
   // -- testing --
+
   // clearEEPROM(); // kutsu tarvittaessa, tyhjentää muistin
-  readEEPROM();
+  
   initializeDisplay();
-  scoreHandler(scorePointer);
   initializeLeds();
   initButtonsAndButtonInterrupts();
+  
+  readEEPROM();
+  scoreHandler(scorePointer);
+ 
+  Serial.println(savedScores[0]);
+
+  interrupts();
 }
+
 
 // ---- TESTING -----
 void jurgenPlayed(int sweet)
@@ -42,36 +52,12 @@ void jurgenPlayed(int sweet)
 }
 // ---- TESTING ----
 
-// painallukset, ehkä siirretään muualle?
-void buttonGaming(int but)
+// painallukset, Danielin
+void buttonReader(int but)
 {
-  if (gameOn)
-  {
-    checkGame(but);
-  }
-  else
-  {
-    switch (but)
-    {
-    case 1:
-      showResult(0);
-      countDown(3);
-      startTheGame();
-      break;
 
-    case 2:
-      scoreHandler(scorePointer++);
-      break;
-
-    case 3:
-      scoreHandler(scorePointer--);
-      break;
-
-    case 4:
-      break;
-    }
-  }
 }
+
 
 void loop()
 {
@@ -80,13 +66,46 @@ void loop()
 
   if (buttonNumber > 0)
   {
-    buttonGaming(buttonNumber);
+      if (gameOn)
+  {
+    checkGame(buttonNumber);
+  }
+  else
+  {
+    switch (buttonNumber)
+    {
+    case 1:
+      showResult(0);
+      countDown(3);
+      startTheGame();
+      break;
+
+    case 2:
+      scorePointer++;
+      if(scorePointer >= 255){
+        scorePointer = 0;
+      }
+      scoreHandler(scorePointer);
+      break;
+
+    case 3:
+      scorePointer--;
+      if(scorePointer >= 255){
+        scorePointer = 254;
+      }
+      scoreHandler(scorePointer);
+      break;
+
+    case 4:
+      break;
+    }
+  }
     buttonNumber = -1;
   }
 
+  // tän vois varmaa siirtää logic
   if (newTimerInterrupt == true)
   {
-    newTimerInterrupt = false;              // nollataan heti
     byte pending = litCount - matchedCount; // monta painamatonta lediä on jonossa
 
     if (pending >= 20) // 20 painamatonta lediä = häviö
@@ -94,35 +113,17 @@ void loop()
       endGame();
     }
     else
-    {
+    { 
       // Sammutetaan muut ledit
       clearAllLeds();
-
-      static byte oldNumber = 0;    // tähän tallennetaan edellinen arvottu luku
-      static byte randomNumber = 0; // arvottava luku
-
-      // Generoidaan satunnainen numero
-      while (randomNumber == oldNumber)
-      {
-        randomNumber = random(1, 5);
-      }
-      oldNumber = randomNumber;
-
-      // ---- TEST -----
-      Serial.print("led number: ");
-      Serial.println(randomNumber);
-      // ---- TEST -----
-
-      // Aktivoidaan satunnaista numeroa vastaava ledi
-      setLed(randomNumber);
-
-      // laitetaan arvottu luku sequenceen
-      sequence[litCount % 20] = randomNumber;
-
-      // nostetaan myös litcounttia
-      litCount++;
+      logicControl();
+      Serial.print("litcount: ");
+      Serial.println(litCount);
       // tarkistetaan litcount
       isItTime();
+      newTimerInterrupt = false;
+
+      
 
       // ---- TESTING -----
       // jurgenPlayed(randomNumber);

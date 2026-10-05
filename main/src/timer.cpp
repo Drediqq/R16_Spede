@@ -1,8 +1,5 @@
 #include "timer.h"
-#include "HardwareSerial.h"
-#include "logic.h"
-#include "settings.h"
-#include "helpers.h"
+
 
 /*
 ###############################
@@ -207,5 +204,7 @@ void isItTime(){
 ##############################
 */
 ISR(TIMER1_COMPA_vect) {
-  newTimerInterrupt = true; 
+  if(newTimerInterrupt != true){
+    newTimerInterrupt = true; 
+  }
 }

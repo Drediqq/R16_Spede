@@ -1,6 +1,5 @@
 #include "buttons.h"
-#include "helpers.h"
-#include "settings.h"
+
 
 
 volatile uint8_t dState = 0xFF; // Digitaali portin arvo

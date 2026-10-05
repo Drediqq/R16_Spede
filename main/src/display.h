@@ -2,6 +2,7 @@
 #define DISPLAY_H
 #include <Arduino.h>
 #include "score.h"
+#include "settings.h"
 
 extern byte savedScores[];
 
