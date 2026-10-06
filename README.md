@@ -1,11 +1,32 @@
 # R16 Speden Speli
 
 Arduinolla toteutettu muisti- ja reaktiopeli, joka perustuu Speden Spelit -ohjelman nopeustestiin.
-<!-- GIF tai kuva pelistä -->
+
+[Katso demovideo YouTubessa](https://www.youtube.com/watch?v=QDia3e12czc)
+
+## Pelin toiminta
+- Pelin vaikeustaso valitsin käynnistyy nappia 1 painamalla.
+- Vaikeustasoa voi vaihdella nappia 4 painamalla.
+- Pisteet lasketaan vaikeustason mukaan
+- Peli alkaa nappia 1 painamalla valitulla vaikeustasolla.
+- Kun peli on käynnissä, ledejä syttyy satunnaisesti.
+- Tehtäväsi on painaa kyseisen ledin nappia.
+- Oikea painallus lisää näytölle yhden pisteen.
+- Peli nopeutuu 5 syttyneen ledin välein x% nopeammaksi valitun vaikeustason mukaisesti. 
+- Peli loppuu, jos jäät 20 painallusta jälkeen tai painat väärää nappia.
+- Kun peli päättyy, ledit näyttävät valoshown ja näytöllä on lasketut pisteesi.
 
 ## Vuokaavio
 
 [Avaa vuokaavio](https://raw.githubusercontent.com/Drediqq/R16_Spede/main/images/Spedevuokaavio.svg)
+
+## Kytkentä
+
+[Avaa fyysinen kytkentä](images/spedekytkenta.jpg)
+
+### Piirikaavio
+
+[Avaa piirikaavio](images/piirikaavio.png)
 
 ## Tarvittavat komponentit
 
@@ -31,26 +52,6 @@ Arduinolla toteutettu muisti- ja reaktiopeli, joka perustuu Speden Spelit -ohjel
 | M3×8-ruuvi | 12 |
 
 Kotelon 3D-tulostettavat mallit löytyy kansiosta [kotelo](kotelo/).
-
-## Pelin toiminta
-- Pelin vaikeustaso valitsin käynnistyy nappia 1 painamalla.
-- Vaikeustasoa voi vaihdella nappia 4 painamalla.
-- Pisteet lasketaan vaikeustason mukaan
-- Peli alkaa nappia 1 painamalla valitulla vaikeustasolla.
-- Kun peli on käynnissä, ledejä syttyy satunnaisesti.
-- Tehtäväsi on painaa kyseisen ledin nappia.
-- Oikea painallus lisää näytölle yhden pisteen.
-- Peli nopeutuu 5 syttyneen ledin välein x% nopeammaksi valitun vaikeustason mukaisesti. 
-- Peli loppuu, jos jäät 20 painallusta jälkeen tai painat väärää nappia.
-- Kun peli päättyy, ledit näyttävät valoshown ja näytöllä on lasketut pisteesi.
-
-## Kytkentä
-
-[Avaa fyysinen kytkentä](images/spedekytkenta.jpg)
-
-### Piirikaavio
-
-[Avaa piirikaavio](images/piirikaavio.png)
 
 ## Tekijät
 
