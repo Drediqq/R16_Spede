@@ -1,7 +1,8 @@
 # R16 Speden Speli
 
 Arduinolla toteutettu muisti- ja reaktiopeli, joka perustuu Speden Spelit -ohjelman nopeustestiin.
-<!-- GIF tai kuva pelistä -->
+
+[Katso demovideo YouTubessa](https://www.youtube.com/watch?v=QDia3e12czc)
 
 ## Pelin toiminta
 - Pelin vaikeustaso valitsin käynnistyy nappia 1 painamalla.
