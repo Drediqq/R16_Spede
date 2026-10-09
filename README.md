@@ -2,7 +2,7 @@
 
 Arduinolla toteutettu muisti- ja reaktiopeli, joka perustuu Speden Spelit -ohjelman nopeustestiin.
 
-[Katso demovideo YouTubessa](https://www.youtube.com/watch?v=QDia3e12czc)
+[Katso demovideo YouTubessa](https://www.youtube.com/watch?v=gHnDQQrifNQ)
 
 ## Pelin toiminta
 - Pelin vaikeustaso valitsin käynnistyy nappia 1 painamalla.
